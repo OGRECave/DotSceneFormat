@@ -274,37 +274,3 @@
 <!ATTLIST userDataReference
     id CDATA #REQUIRED
 >
- 
-<!ELEMENT octree (octnode)>
-<!ATTLIST octree
-    binFile CDATA #REQUIRED
->
- 
-<!ELEMENT octNode (octNode*, octMesh*)>
-<!ATTLIST octNode
-    px        CDATA #REQUIRED
-    py        CDATA #REQUIRED
-    pz        CDATA #REQUIRED
-    width    CDATA #REQUIRED
-    height    CDATA #REQUIRED
-    depth    CDATA #REQUIRED
->
- 
-<!ELEMENT octMesh (octGeometry, octMaterial)>
- 
-<!ELEMENT octGeometry EMPTY>
-<!ATTLIST octGeometry
-    binaryDataOffset    CDATA #REQUIRED
-    vertTotal            CDATA #REQUIRED
-    triTotal            CDATA #REQUIRED
-    normalTotal            CDATA #IMPLIED
-    colorTotal            CDATA #IMPLIED
-    texSets                CDATA #IMPLIED
-    texTotal            CDATA #IMPLIED
->
- 
-<!ELEMENT octMaterial EMPTY>
-<!ATTLIST octMaterial
-    name    CDATA #REQUIRED
-    texture CDATA #IMPLIED
->

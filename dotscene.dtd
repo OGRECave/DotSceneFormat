@@ -1,0 +1,310 @@
+<!ELEMENT scene (nodes?, externals?, environment?, terrain?, userDataReference?, octree?, light?, camera?)>
+<!ATTLIST scene
+    formatVersion    CDATA    #REQUIRED
+    id                ID        #IMPLIED
+    sceneManager    CDATA    #IMPLIED
+    minOgreVersion    CDATA    #IMPLIED
+    author            CDATA    #IMPLIED
+>
+ 
+<!ELEMENT terrain EMPTY>
+<!ATTLIST terrain
+    dataFile CDATA #IMPLIED
+>
+ 
+<!ELEMENT nodes (node*, position?, rotation?, scale?)>
+ 
+<!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*, userDataReference?)>
+<!ATTLIST node
+    name        CDATA    #IMPLIED
+    id            ID        #IMPLIED
+    isTarget    (true | false) "true"
+>
+ 
+<!ELEMENT particleSystem (userDataReference?)>
+<!ATTLIST particleSystem
+    name    CDATA    #IMPLIED
+    id        ID        #IMPLIED
+    file    CDATA    #REQUIRED
+>
+ 
+<!ELEMENT light (position?, normal?, colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userDataReference?)>
+<!ATTLIST light
+    name            CDATA    #IMPLIED
+    id                ID        #IMPLIED
+    type            (point | directional | spot | radPoint) "point"
+    visible            (true | false) "true"
+    castShadows        (true | false) "true"
+>
+ 
+<!ELEMENT camera (clipping?, position?, rotation?, normal?, lookTarget?, trackTarget?, userDataReference?)>
+<!ATTLIST camera
+    name            CDATA    #IMPLIED
+    id                ID        #IMPLIED
+    fov                CDATA    #IMPLIED
+    aspectRatio        CDATA    #IMPLIED
+    projectionType    (perspective | orthographic)    "perspective"
+>
+ 
+<!ELEMENT trackTarget (localDirection?, offset?)>
+<!ATTLIST trackTarget
+    nodeName    CDATA    #REQUIRED
+>
+ 
+<!ELEMENT lookTarget (position?, localDirection?)>
+<!ATTLIST lookTarget
+    nodeName    CDATA    #IMPLIED
+    relativeTo    (local | parent | world) 
+>
+ 
+<!ELEMENT lightAttenuation EMPTY>
+<!ATTLIST lightAttenuation
+    range        CDATA    #IMPLIED
+    constant    CDATA    #IMPLIED
+    linear        CDATA    #IMPLIED
+    quadratic    CDATA    #IMPLIED
+>
+ 
+<!ELEMENT lightRange EMPTY>
+<!ATTLIST lightRange
+    inner    CDATA    #REQUIRED
+    outer    CDATA    #REQUIRED
+    falloff CDATA    #REQUIRED
+>
+ 
+<!ELEMENT entity (vertexBuffer?, indexBuffer?, userDataReference?)>
+<!ATTLIST entity
+    name            CDATA    #IMPLIED
+    id                ID        #IMPLIED
+    meshFile        CDATA    #REQUIRED
+    materialFile    CDATA    #IMPLIED
+    static            (true | false) "false"
+    castShadows        (true | false) "true"
+>
+ 
+<!ELEMENT environment (fog?, skyBox?, skyDome?, skyPlane?, clipping?, colourAmbient?, colourBackground?, userDataReference?)>
+ 
+<!ELEMENT clipping EMPTY>
+<!ATTLIST clipping
+    near    CDATA #REQUIRED
+    far        CDATA #REQUIRED
+>
+ 
+<!ELEMENT fog (colourDiffuse?)>
+<!ATTLIST fog
+    expDensity    CDATA    #DEFAULT    "0.001"
+    linearStart CDATA    #DEFAULT    "0.0"
+    linearEnd    CDATA    #DEFAULT    "1.0"
+    mode        (none | exp | exp2 | linear) "none"
+>
+ 
+<!ELEMENT skyBox (rotation?)>
+<!ATTLIST skyBox
+    material    CDATA #REQUIRED
+    distance    CDATA #DEFAULT    "5000"
+    drawFirst    (true | false)    "true"
+>
+ 
+<!ELEMENT skyDome (rotation?)>
+<!ATTLIST skyDome
+    material    CDATA #REQUIRED
+    curvature    CDATA #DEFAULT    "10"
+    tiling        CDATA #DEFAULT    "8"
+    distance    CDATA #DEFAULT    "4000"
+    drawFirst    (true | false) "true"
+>
+ 
+<!ELEMENT skyPlane EMPTY>
+<!ATTLIST skyPlane
+    material    CDATA    #REQUIRED
+    planeX        CDATA    #DEFAULT    "0"
+    planeY        CDATA    #DEFAULT    "-1"
+    planeZ        CDATA    #DEFAULT    "0"
+    planeD        CDATA    #DEFAULT    "5000"
+    scale        CDATA    #DEFAULT    "1000"
+    bow            CDATA    #DEFAULT    "0" 
+    tiling        CDATA    #DEFAULT    "10"
+    drawFirst    (true | false)        "true"
+>
+ 
+<!ELEMENT billboardSet (billboard*)>
+<!ATTLIST billboardSet
+    name        CDATA    #REQUIRED   
+    material    CDATA    #REQUIRED
+    id            ID        #IMPLIED
+    width        CDATA    #DEFAULT    "10"
+    height        CDATA    #DEFAULT    "10"
+    type        (orientedCommon | orientedSelf | point) "point"
+    origin        (bottomLeft | bottomCenter | bottomRight | left | center | right | topLeft | topCenter | topRight) "center"
+>
+ 
+<!ELEMENT billboard (position?, rotation?, colourDiffuse?)>
+<!ATTLIST billboard
+    id ID #IMPLIED
+    width CDATA #IMPLIED
+    height CDATA #IMPLIED
+>
+ 
+<!ELEMENT plane (normal, upVector?, vertexBuffer?, indexBuffer?)>
+<!ATTLIST plane
+    name            CDATA    #REQUIRED
+    id                ID        #IMPLIED
+    distance        CDATA    #REQUIRED
+    width            CDATA    #REQUIRED
+    height            CDATA    #REQUIRED
+    xSegments        CDATA    #DEFAULT    "1"
+    ySegments        CDATA    #DEFAULT    "1"
+    numTexCoordSets    CDATA    #DEFAULT    "1"
+    uTile            CDATA    #DEFAULT    "1"
+    vTile            CDATA    #DEFAULT    "1"
+    material        CDATA    #IMPLIED
+    normals            (true | false)        "true"
+>
+ 
+<!ELEMENT vertexBuffer EMPTY>
+<!ATTLIST vertexBuffer
+    usage        (static | dynamic | writeOnly | staticWriteOnly | dynamicWriteOnly)    "staticWriteOnly"
+    useShadow    (true | false)    "true"
+>
+ 
+<!ELEMENT indexBuffer EMPTY>
+<!ATTLIST indexBuffer
+    usage        (static | dynamic | writeOnly | staticWriteOnly | dynamicWriteOnly)    "staticWriteOnly"
+    useShadow    (true | false)    "true"
+>
+ 
+<!ELEMENT externals (item*)>
+ 
+<!ELEMENT item (file)>
+<!ATTLIST item
+    type CDATA #REQUIRED
+>
+ 
+<!ELEMENT file EMPTY>
+<!ATTLIST file
+    name CDATA #REQUIRED
+>
+ 
+<!ELEMENT position EMPTY>
+<!ATTLIST position
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT rotation EMPTY>
+<!ATTLIST rotation
+    qx        CDATA #IMPLIED
+    qy        CDATA #IMPLIED
+    qz        CDATA #IMPLIED
+    qw        CDATA #IMPLIED
+    axisX    CDATA #IMPLIED
+    axisY    CDATA #IMPLIED
+    axisZ    CDATA #IMPLIED
+    angle    CDATA #IMPLIED
+    angleX    CDATA #IMPLIED
+    angleY    CDATA #IMPLIED
+    angleZ    CDATA #IMPLIED
+>
+ 
+<!ELEMENT normal EMPTY>
+<!ATTLIST normal
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT upVector EMPTY>
+<!ATTLIST upVector
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT offset EMPTY>
+<!ATTLIST offset
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT localDirection EMPTY>
+<!ATTLIST localDirection
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT scale EMPTY>
+<!ATTLIST scale
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    z CDATA #REQUIRED
+>
+ 
+<!ELEMENT colourDiffuse EMPTY>
+<!ATTLIST colourDiffuse
+    r CDATA #REQUIRED
+    g CDATA #REQUIRED
+    b CDATA #REQUIRED
+>
+ 
+<!ELEMENT colourSpecular EMPTY>
+<!ATTLIST colourSpecular
+    r CDATA #REQUIRED
+    g CDATA #REQUIRED
+    b CDATA #REQUIRED
+>
+ 
+<!ELEMENT colourAmbient EMPTY>
+<!ATTLIST colourAmbient
+    r CDATA #REQUIRED
+    g CDATA #REQUIRED
+    b CDATA #REQUIRED
+>
+ 
+<!ELEMENT colourBackground EMPTY>
+<!ATTLIST colourBackground
+    r CDATA #REQUIRED
+    g CDATA #REQUIRED
+    b CDATA #REQUIRED
+>
+ 
+<!ELEMENT userDataReference EMPTY>
+<!ATTLIST userDataReference
+    id CDATA #REQUIRED
+>
+ 
+<!ELEMENT octree (octnode)>
+<!ATTLIST octree
+    binFile CDATA #REQUIRED
+>
+ 
+<!ELEMENT octNode (octNode*, octMesh*)>
+<!ATTLIST octNode
+    px        CDATA #REQUIRED
+    py        CDATA #REQUIRED
+    pz        CDATA #REQUIRED
+    width    CDATA #REQUIRED
+    height    CDATA #REQUIRED
+    depth    CDATA #REQUIRED
+>
+ 
+<!ELEMENT octMesh (octGeometry, octMaterial)>
+ 
+<!ELEMENT octGeometry EMPTY>
+<!ATTLIST octGeometry
+    binaryDataOffset    CDATA #REQUIRED
+    vertTotal            CDATA #REQUIRED
+    triTotal            CDATA #REQUIRED
+    normalTotal            CDATA #IMPLIED
+    colorTotal            CDATA #IMPLIED
+    texSets                CDATA #IMPLIED
+    texTotal            CDATA #IMPLIED
+>
+ 
+<!ELEMENT octMaterial EMPTY>
+<!ATTLIST octMaterial
+    name    CDATA #REQUIRED
+    texture CDATA #IMPLIED
+>

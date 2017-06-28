@@ -4,10 +4,6 @@
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
-#pragma warning(disable:4390)
-#pragma warning(disable:4305)
-
-
 DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0) 
 {
     mTerrainGlobalOptions = OGRE_NEW Ogre::TerrainGlobalOptions();
@@ -220,8 +216,9 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 {
     Ogre::Real worldSize = getAttribReal(XMLNode, "worldSize");
     int mapSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("mapSize")->value());
-    bool colourmapEnabled = getAttribBool(XMLNode, "colourmapEnabled");
-    int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
+    // TODO: unused
+    // bool colourmapEnabled = getAttribBool(XMLNode, "colourmapEnabled");
+    // int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
     int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
     int maxPixelError = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
     
@@ -363,7 +360,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     // Process attributes
     Ogre::String name = getAttrib(XMLNode, "name");
     Ogre::String id = getAttrib(XMLNode, "id");
-    Ogre::Real fov = getAttribReal(XMLNode, "fov", 45);
+    // Ogre::Real fov = getAttribReal(XMLNode, "fov", 45);
     Ogre::Real aspectRatio = getAttribReal(XMLNode, "aspectRatio", 1.3333);
     Ogre::String projectionType = getAttrib(XMLNode, "projectionType", "perspective");
 
@@ -381,7 +378,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     //pCamera->setFOVy(Ogre::Degree(fov));
 
     // Set the aspect ratio
-    //pCamera->setAspectRatio(aspectRatio);
+    pCamera->setAspectRatio(aspectRatio);
     
     // Set the projection type
     if(projectionType == "perspective")
@@ -459,7 +456,7 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
 
     // Process other attributes
     Ogre::String id = getAttrib(XMLNode, "id");
-    bool isTarget = getAttribBool(XMLNode, "isTarget");
+    //bool isTarget = getAttribBool(XMLNode, "isTarget"); // TODO: unused
 
     rapidxml::xml_node<>* pElement;
 
@@ -844,8 +841,8 @@ void DotSceneLoader::processClipping(rapidxml::xml_node<>* XMLNode)
     //! @todo Implement this
 
     // Process attributes
-    Ogre::Real fNear = getAttribReal(XMLNode, "near", 0);
-    Ogre::Real fFar = getAttribReal(XMLNode, "far", 1);
+    // Ogre::Real fNear = getAttribReal(XMLNode, "near", 0);
+    // Ogre::Real fFar = getAttribReal(XMLNode, "far", 1);
 }
 
 void DotSceneLoader::processLightRange(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight)
@@ -990,5 +987,5 @@ Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::S
 void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity)
 {
     Ogre::String str = XMLNode->first_attribute("id")->value();
-    pEntity->setUserAny(Ogre::Any(str));
+    pEntity->getUserObjectBindings().setUserAny(Ogre::Any(str));
 }

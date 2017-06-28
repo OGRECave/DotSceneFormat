@@ -307,6 +307,7 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
 
     pLight->setVisible(getAttribBool(XMLNode, "visible", true));
     pLight->setCastShadows(getAttribBool(XMLNode, "castShadows", true));
+    pLight->setPowerScale(getAttribReal(XMLNode, "powerScale", 1.0));
 
     rapidxml::xml_node<>* pElement;
 

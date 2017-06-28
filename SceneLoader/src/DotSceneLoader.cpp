@@ -98,11 +98,6 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
     if(pElement)
         processUserDataReference(pElement);
 
-    // Process octree (?)
-    pElement = XMLRoot->first_node("octree");
-    if(pElement)
-        processOctree(pElement);
-
     // Process light (?)
     pElement = XMLRoot->first_node("light");
     if(pElement)
@@ -275,11 +270,6 @@ void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)
 }
 
 void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
-{
-    //! @todo Implement this
-}
-
-void DotSceneLoader::processOctree(rapidxml::xml_node<>* XMLNode)
 {
     //! @todo Implement this
 }

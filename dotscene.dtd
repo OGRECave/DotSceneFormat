@@ -35,6 +35,7 @@
     type            (point | directional | spot | radPoint) "point"
     visible            (true | false) "true"
     castShadows        (true | false) "true"
+    powerScale		CDATA	"1.0"
 >
  
 <!ELEMENT camera (clipping?, position?, rotation?, normal?, lookTarget?, trackTarget?, userDataReference?)>

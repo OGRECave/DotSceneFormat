@@ -370,9 +370,11 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     // Create the camera
     Ogre::Camera *pCamera = mSceneMgr->createCamera(name);
     
-    //TODO: make a flag or attribute indicating whether or not the camera should be attached to any parent node.
-    //if(pParent)
-    //    pParent->attachObject(pCamera);
+    // construct a scenenode is no parent
+    if(!pParent)
+        pParent = mAttachNode->createChildSceneNode(name);
+
+    pParent->attachObject(pCamera);
 
     // Set the field-of-view
     //! @todo Is this always in degrees?
@@ -429,15 +431,6 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     pElement = XMLNode->first_node("userDataReference");
     if(pElement)
         ;//!< @todo Implement the camera user data reference
-
-    // construct a scenenode is no parent
-    if(!pParent)
-    {
-        Ogre::SceneNode* pNode = mAttachNode->createChildSceneNode(name);
-        pNode->setPosition(pCamera->getPosition());
-        pNode->setOrientation(pCamera->getOrientation());
-        pNode->scale(1,1,1);
-    }
 }
 
 void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)

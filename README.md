@@ -2,7 +2,9 @@
 
 DotScene (aka .scene) is just a standardized XML file format.
 
-This file format is meant to be used to set up a scene in Ogre. It is meant to be useful for any type of application/game. Editors can export to .scene format, and apps can load the format.
+This file format is meant to be used to set up a scene in [Ogre](http://www.ogre3d.org/). It is useful for any type of application/ game. Editors can export to .scene format, and apps can load the format.
+
+Besides Ogre, the [jMonkeyEngine](http://jmonkeyengine.org/) also supports loading .scene files.
 
 ## What is DotScene?
 DotScene file does not contain any mesh data, texture data, etc. It just contains elements that describe a scene.

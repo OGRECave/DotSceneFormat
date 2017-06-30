@@ -673,12 +673,15 @@ void DotSceneLoader::processParticleSystem(rapidxml::xml_node<>* XMLNode, Ogre::
     // Process attributes
     Ogre::String name = getAttrib(XMLNode, "name");
     Ogre::String id = getAttrib(XMLNode, "id");
-    Ogre::String file = getAttrib(XMLNode, "file");
+    Ogre::String templateName = getAttrib(XMLNode, "template");
+
+    if(templateName.empty())
+        templateName = getAttrib(XMLNode, "file"); // compatibility with old scenes
 
     // Create the particle system
     try
     {
-        Ogre::ParticleSystem *pParticles = mSceneMgr->createParticleSystem(name, file);
+        Ogre::ParticleSystem *pParticles = mSceneMgr->createParticleSystem(name, templateName);
         pParent->attachObject(pParticles);
     }
     catch(Ogre::Exception &/*e*/)

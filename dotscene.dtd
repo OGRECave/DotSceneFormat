@@ -25,7 +25,7 @@
 <!ATTLIST particleSystem
     name    CDATA    #IMPLIED
     id        ID        #IMPLIED
-    file    CDATA    #REQUIRED
+    template    CDATA    #REQUIRED
 >
  
 <!ELEMENT light (position?, normal?, colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userDataReference?)>

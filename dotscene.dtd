@@ -14,7 +14,7 @@
  
 <!ELEMENT nodes (node*, position?, rotation?, scale?)>
  
-<!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*, userData?)>
+<!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, userData?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*)>
 <!ATTLIST node
     name        CDATA    #IMPLIED
     id            ID        #IMPLIED

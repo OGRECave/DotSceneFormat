@@ -902,13 +902,6 @@ Ogre::Quaternion DotSceneLoader::parseQuaternion(rapidxml::xml_node<>* XMLNode)
 
     Ogre::Quaternion orientation;
 
-    if(XMLNode->first_attribute("qx"))
-    {
-        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qx")->value());
-        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qy")->value());
-        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qz")->value());
-        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qw")->value());
-    }
     if(XMLNode->first_attribute("qw"))
     {
         orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qw")->value());

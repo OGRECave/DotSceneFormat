@@ -1,4 +1,4 @@
-<!ELEMENT scene (nodes?, externals?, environment?, terrain?, userDataReference?, octree?, light?, camera?)>
+<!ELEMENT scene (nodes?, externals?, environment?, terrain?, userData?, octree?, light?, camera?)>
 <!ATTLIST scene
     formatVersion    CDATA    #REQUIRED
     id                ID        #IMPLIED
@@ -14,21 +14,21 @@
  
 <!ELEMENT nodes (node*, position?, rotation?, scale?)>
  
-<!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*, userDataReference?)>
+<!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*, userData?)>
 <!ATTLIST node
     name        CDATA    #IMPLIED
     id            ID        #IMPLIED
     isTarget    (true | false) "true"
 >
  
-<!ELEMENT particleSystem (userDataReference?)>
+<!ELEMENT particleSystem (userData?)>
 <!ATTLIST particleSystem
     name    CDATA    #IMPLIED
     id        ID        #IMPLIED
     template    CDATA    #REQUIRED
 >
  
-<!ELEMENT light (position?, normal?, colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userDataReference?)>
+<!ELEMENT light (position?, normal?, colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userData?)>
 <!ATTLIST light
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -38,7 +38,7 @@
     powerScale		CDATA	"1.0"
 >
  
-<!ELEMENT camera (clipping?, position?, rotation?, normal?, lookTarget?, trackTarget?, userDataReference?)>
+<!ELEMENT camera (clipping?, position?, rotation?, normal?, lookTarget?, trackTarget?, userData?)>
 <!ATTLIST camera
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -73,7 +73,7 @@
     falloff CDATA    #REQUIRED
 >
  
-<!ELEMENT entity (vertexBuffer?, indexBuffer?, userDataReference?)>
+<!ELEMENT entity (vertexBuffer?, indexBuffer?, userData?)>
 <!ATTLIST entity
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -271,7 +271,10 @@
     b CDATA #REQUIRED
 >
  
-<!ELEMENT userDataReference EMPTY>
-<!ATTLIST userDataReference
-    id CDATA #REQUIRED
+<!ELEMENT userData (property+)>
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+    name CDATA #REQUIRED
+    type ( bool | float | int | str ) "str"
+    data CDATA #REQUIRED
 >

@@ -32,7 +32,7 @@
 <!ATTLIST light
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
-    type            (point | directional | spot | radPoint) "point"
+    type            (point | directional | spot ) "point"
     visible            (true | false) "true"
     castShadows        (true | false) "true"
     powerScale		CDATA	"1.0"

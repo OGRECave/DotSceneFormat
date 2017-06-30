@@ -621,7 +621,7 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     Ogre::String name = getAttrib(XMLNode, "name");
     Ogre::String id = getAttrib(XMLNode, "id");
     Ogre::String meshFile = getAttrib(XMLNode, "meshFile");
-    Ogre::String materialFile = getAttrib(XMLNode, "materialFile");
+    Ogre::String material = getAttrib(XMLNode, "material");
     bool isStatic = getAttribBool(XMLNode, "static", false);;
     bool castShadows = getAttribBool(XMLNode, "castShadows", true);
 
@@ -652,8 +652,8 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
         pEntity->setCastShadows(castShadows);
         pParent->attachObject(pEntity);
         
-        if(!materialFile.empty())
-            pEntity->setMaterialName(materialFile);
+        if(!material.empty())
+            pEntity->setMaterialName(material);
     }
     catch(Ogre::Exception &/*e*/)
     {

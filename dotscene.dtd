@@ -78,7 +78,7 @@
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
     meshFile        CDATA    #REQUIRED
-    materialFile    CDATA    #IMPLIED
+    material        CDATA    #IMPLIED
     static            (true | false) "false"
     castShadows        (true | false) "true"
 >

@@ -30,3 +30,16 @@ A simple .scene file example:
     </nodes>
 </scene>
 ```
+
+## User Data
+
+To add logic properties to the scene you can use the `<userData>` node as following:
+
+```xml
+<entity meshFile="Cube.mesh" name="Cube" >
+    <userData>
+        <property data="1.0" name="mass" type="float" />
+        <property data="1.0" name="mass_radius" type="float" />
+    </userData>
+</entity>
+```

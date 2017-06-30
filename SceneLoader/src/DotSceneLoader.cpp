@@ -101,7 +101,7 @@ Ogre::ColourValue parseColour(rapidxml::xml_node<>* XMLNode)
 }
 }
 
-DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0) 
+DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0), mBackgroundColour(Ogre::ColourValue::Black)
 {
     mTerrainGlobalOptions = OGRE_NEW Ogre::TerrainGlobalOptions();
 }
@@ -293,10 +293,9 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
         mSceneMgr->setAmbientLight(parseColour(pElement));
 
     // Process colourBackground (?)
-    //! @todo Set the background colour of all viewports (RenderWindow has to be provided then)
     pElement = XMLNode->first_node("colourBackground");
     if(pElement)
-        ;//mSceneMgr->set(parseColour(pElement));
+        mBackgroundColour = parseColour(pElement);
 }
 
 void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)

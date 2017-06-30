@@ -50,7 +50,7 @@ void SceneLoadSample::setup(void)
     addInputListener(camman);
 
     // and tell it to render into the main window
-    getRenderWindow()->addViewport(cam);
+    getRenderWindow()->addViewport(cam)->setBackgroundColour(loader.getBackgroundColour());
 }
 
 int main(void)

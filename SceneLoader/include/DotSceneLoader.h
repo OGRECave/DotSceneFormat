@@ -5,6 +5,7 @@
 #include <OgreString.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
+#include <OgreColourValue.h>
 #include <OgreResourceGroupManager.h>
 #include <vector>
 
@@ -31,9 +32,12 @@
 
         Ogre::TerrainGroup* getTerrainGroup() { return mTerrainGroup; }
 
+        const Ogre::ColourValue& getBackgroundColour() {
+            return mBackgroundColour;
+        }
+
         std::vector<Ogre::String> staticObjects;
         std::vector<Ogre::String> dynamicObjects;
-
     protected:
         void processScene(rapidxml::xml_node<>* XMLRoot);
 
@@ -72,6 +76,7 @@
         Ogre::TerrainGroup* mTerrainGroup;
         Ogre::Vector3 mTerrainPosition;
         Ogre::Vector3 mLightDirection;
+        Ogre::ColourValue mBackgroundColour;
     };
 
 #endif // DOT_SCENELOADER_H

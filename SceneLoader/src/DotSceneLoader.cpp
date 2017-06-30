@@ -4,6 +4,103 @@
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
+namespace {
+Ogre::String getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, const Ogre::String &defaultValue = "")
+{
+    if(XMLNode->first_attribute(attrib.c_str()))
+        return XMLNode->first_attribute(attrib.c_str())->value();
+    else
+        return defaultValue;
+}
+
+Ogre::Real getAttribReal(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, Ogre::Real defaultValue = 0)
+{
+    if(XMLNode->first_attribute(attrib.c_str()))
+        return Ogre::StringConverter::parseReal(XMLNode->first_attribute(attrib.c_str())->value());
+    else
+        return defaultValue;
+}
+
+bool getAttribBool(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, bool defaultValue = false)
+{
+    if(!XMLNode->first_attribute(attrib.c_str()))
+        return defaultValue;
+
+    if(Ogre::String(XMLNode->first_attribute(attrib.c_str())->value()) == "true")
+        return true;
+
+    return false;
+}
+
+Ogre::Vector3 parseVector3(rapidxml::xml_node<>* XMLNode)
+{
+    return Ogre::Vector3(
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value()),
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value()),
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value())
+    );
+}
+
+Ogre::Quaternion parseQuaternion(rapidxml::xml_node<>* XMLNode)
+{
+    //! @todo Fix this crap!
+
+    Ogre::Quaternion orientation;
+
+    if(XMLNode->first_attribute("qw"))
+    {
+        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qw")->value());
+        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qx")->value());
+        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qy")->value());
+        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qz")->value());
+    }
+    else if(XMLNode->first_attribute("axisX"))
+    {
+        Ogre::Vector3 axis;
+        axis.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisX")->value());
+        axis.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisY")->value());
+        axis.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisZ")->value());
+        Ogre::Real angle = Ogre::StringConverter::parseReal(XMLNode->first_attribute("angle")->value());;
+        orientation.FromAngleAxis(Ogre::Angle(angle), axis);
+    }
+    else if(XMLNode->first_attribute("angleX"))
+    {
+        Ogre::Matrix3 rot;
+        rot.FromEulerAnglesXYZ(
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleX")->value()),
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleY")->value()),
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleZ")->value()));
+        orientation.FromRotationMatrix(rot);
+    }
+    else if(XMLNode->first_attribute("x"))
+    {
+        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value());
+        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value());
+        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value());
+        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("w")->value());
+    }
+    else if(XMLNode->first_attribute("w"))
+    {
+        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("w")->value());
+        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value());
+        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value());
+        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value());
+    }
+
+    return orientation;
+}
+
+Ogre::ColourValue parseColour(rapidxml::xml_node<>* XMLNode)
+{
+    return Ogre::ColourValue(
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("r")->value()),
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("g")->value()),
+        Ogre::StringConverter::parseReal(XMLNode->first_attribute("b")->value()),
+        XMLNode->first_attribute("a") != NULL ? Ogre::StringConverter::parseReal(XMLNode->first_attribute("a")->value()) : 1
+    );
+}
+}
+
 DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0) 
 {
     mTerrainGlobalOptions = OGRE_NEW Ogre::TerrainGlobalOptions();
@@ -850,102 +947,6 @@ void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre
 
     // Setup the light attenuation
     pLight->setAttenuation(range, constant, linear, quadratic);
-}
-
-
-Ogre::String DotSceneLoader::getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, const Ogre::String &defaultValue)
-{
-    if(XMLNode->first_attribute(attrib.c_str()))
-        return XMLNode->first_attribute(attrib.c_str())->value();
-    else
-        return defaultValue;
-}
-
-Ogre::Real DotSceneLoader::getAttribReal(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, Ogre::Real defaultValue)
-{
-    if(XMLNode->first_attribute(attrib.c_str()))
-        return Ogre::StringConverter::parseReal(XMLNode->first_attribute(attrib.c_str())->value());
-    else
-        return defaultValue;
-}
-
-bool DotSceneLoader::getAttribBool(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, bool defaultValue)
-{
-    if(!XMLNode->first_attribute(attrib.c_str()))
-        return defaultValue;
-
-    if(Ogre::String(XMLNode->first_attribute(attrib.c_str())->value()) == "true")
-        return true;
-
-    return false;
-}
-
-Ogre::Vector3 DotSceneLoader::parseVector3(rapidxml::xml_node<>* XMLNode)
-{
-    return Ogre::Vector3(
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value()),
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value()),
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value())
-    );
-}
-
-Ogre::Quaternion DotSceneLoader::parseQuaternion(rapidxml::xml_node<>* XMLNode)
-{
-    //! @todo Fix this crap!
-
-    Ogre::Quaternion orientation;
-
-    if(XMLNode->first_attribute("qw"))
-    {
-        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qw")->value());
-        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qx")->value());
-        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qy")->value());
-        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("qz")->value());
-    }
-    else if(XMLNode->first_attribute("axisX"))
-    {
-        Ogre::Vector3 axis;
-        axis.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisX")->value());
-        axis.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisY")->value());
-        axis.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("axisZ")->value());
-        Ogre::Real angle = Ogre::StringConverter::parseReal(XMLNode->first_attribute("angle")->value());;
-        orientation.FromAngleAxis(Ogre::Angle(angle), axis);
-    }
-    else if(XMLNode->first_attribute("angleX"))
-    {
-        Ogre::Matrix3 rot;
-        rot.FromEulerAnglesXYZ(
-                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleX")->value()),
-                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleY")->value()),
-                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleZ")->value()));
-        orientation.FromRotationMatrix(rot);
-    }
-    else if(XMLNode->first_attribute("x"))
-    {
-        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value());
-        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value());
-        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value());
-        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("w")->value());
-    }
-    else if(XMLNode->first_attribute("w"))
-    {
-        orientation.w = Ogre::StringConverter::parseReal(XMLNode->first_attribute("w")->value());
-        orientation.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("x")->value());
-        orientation.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("y")->value());
-        orientation.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("z")->value());
-    }
-
-    return orientation;
-}
-
-Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
-{
-    return Ogre::ColourValue(
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("r")->value()),
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("g")->value()),
-        Ogre::StringConverter::parseReal(XMLNode->first_attribute("b")->value()),
-        XMLNode->first_attribute("a") != NULL ? Ogre::StringConverter::parseReal(XMLNode->first_attribute("a")->value()) : 1
-    );
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)

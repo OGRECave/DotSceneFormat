@@ -19,18 +19,6 @@
         class TerrainGlobalOptions;
     }
 
-    class nodeProperty
-    {
-    public:
-        Ogre::String nodeName;
-        Ogre::String propertyNm;
-        Ogre::String valueName;
-        Ogre::String typeName;
-
-        nodeProperty(const Ogre::String &node, const Ogre::String &propertyName, const Ogre::String &value, const Ogre::String &type)
-            : nodeName(node), propertyNm(propertyName), valueName(value), typeName(type) {}
-    };
-
     class DotSceneLoader
     {
     public:
@@ -40,11 +28,9 @@
         virtual ~DotSceneLoader();
 
         void parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode = NULL, const Ogre::String &sPrependNode = "");
-        Ogre::String getProperty(const Ogre::String &ndNm, const Ogre::String &prop);
 
         Ogre::TerrainGroup* getTerrainGroup() { return mTerrainGroup; }
 
-        std::vector<nodeProperty> nodeProperties;
         std::vector<Ogre::String> staticObjects;
         std::vector<Ogre::String> dynamicObjects;
 
@@ -57,8 +43,8 @@
         void processTerrain(rapidxml::xml_node<>* XMLNode);
         void processTerrainPage(rapidxml::xml_node<>* XMLNode);
         void processBlendmaps(rapidxml::xml_node<>* XMLNode);
-        void processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode);
-        void processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject);
+        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode);
+        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject);
         void processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
         void processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
 

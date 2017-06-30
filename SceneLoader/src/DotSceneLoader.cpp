@@ -191,9 +191,9 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
         processExternals(pElement);
 
     // Process userDataReference (?)
-    pElement = XMLRoot->first_node("userDataReference");
+    pElement = XMLRoot->first_node("userData");
     if(pElement)
-        processUserDataReference(pElement, mAttachNode);
+        processUserData(pElement, mAttachNode);
 
     // Process light (?)
     pElement = XMLRoot->first_node("light");
@@ -428,9 +428,9 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
             processLightAttenuation(pElement, pLight);
     }
     // Process userDataReference (?)
-    pElement = XMLNode->first_node("userDataReference");
+    pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserDataReference(pElement, pLight);
+        processUserData(pElement, pLight);
 }
 
 void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -503,9 +503,9 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
         ;//!< @todo Implement the camera track target
 
     // Process userDataReference (?)
-    pElement = XMLNode->first_node("userDataReference");
+    pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserDataReference(pElement, pCamera);
+        processUserData(pElement, pCamera);
 }
 
 void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -629,9 +629,9 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
     }
 
     // Process userDataReference (?)
-    pElement = XMLNode->first_node("userDataReference");
+    pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserDataReference(pElement, pNode);
+        processUserData(pElement, pNode);
 }
 
 void DotSceneLoader::processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -758,9 +758,9 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     }
 
     // Process userDataReference (?)
-    pElement = XMLNode->first_node("userDataReference");
+    pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserDataReference(pElement, pEntity);
+        processUserData(pElement, pEntity);
 
     
 }
@@ -949,29 +949,35 @@ void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre
     pLight->setAttenuation(range, constant, linear, quadratic);
 }
 
-Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
-{
-    for ( unsigned int i = 0 ; i < nodeProperties.size(); i++ )
-    {
-        if ( nodeProperties[i].nodeName == ndNm && nodeProperties[i].propertyNm == prop )
-        {
-            return nodeProperties[i].valueName;
-        }
-    }
-
-    return "";
-}
-
 template<class T>
-static void _processUserDataReference(rapidxml::xml_node<>* XMLNode, T *pObject)
+static void _processUserData(rapidxml::xml_node<>* XMLNode, T *pObject)
 {
-    Ogre::String str = XMLNode->first_attribute("id")->value();
-    pObject->getUserObjectBindings().setUserAny(Ogre::Any(str));
+    // Process node (*)
+    rapidxml::xml_node<>* pElement = XMLNode->first_node("property");
+    while(pElement)
+    {
+        Ogre::String name = getAttrib(pElement, "name");
+        Ogre::String type = getAttrib(pElement, "type");
+        Ogre::String data = getAttrib(pElement, "data");
+
+        Ogre::Any value;
+        if(type == "bool")
+            value = Ogre::StringConverter::parseBool(data);
+        else if(type == "float")
+            value = Ogre::StringConverter::parseReal(data);
+        else if(type == "int")
+            value = Ogre::StringConverter::parseInt(data);
+        else
+            value = data;
+
+        pObject->getUserObjectBindings().setUserAny(name, value);
+        pElement = pElement->next_sibling("property");
+    }
 }
 
-void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode) {
-    _processUserDataReference(XMLNode, pNode);
+void DotSceneLoader::processUserData(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode) {
+    _processUserData(XMLNode, pNode);
 }
-void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject) {
-    _processUserDataReference(XMLNode, pMObject);
+void DotSceneLoader::processUserData(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject) {
+    _processUserData(XMLNode, pMObject);
 }

@@ -920,12 +920,12 @@ Ogre::Quaternion DotSceneLoader::parseQuaternion(rapidxml::xml_node<>* XMLNode)
     }
     else if(XMLNode->first_attribute("angleX"))
     {
-        Ogre::Vector3 axis;
-        axis.x = Ogre::StringConverter::parseReal(XMLNode->first_attribute("angleX")->value());
-        axis.y = Ogre::StringConverter::parseReal(XMLNode->first_attribute("angleY")->value());
-        axis.z = Ogre::StringConverter::parseReal(XMLNode->first_attribute("angleZ")->value());
-        //orientation.FromAxes(&axis);
-        //orientation.F
+        Ogre::Matrix3 rot;
+        rot.FromEulerAnglesXYZ(
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleX")->value()),
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleY")->value()),
+                Ogre::StringConverter::parseAngle(XMLNode->first_attribute("angleZ")->value()));
+        orientation.FromRotationMatrix(rot);
     }
     else if(XMLNode->first_attribute("x"))
     {

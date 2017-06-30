@@ -83,7 +83,7 @@
     castShadows        (true | false) "true"
 >
  
-<!ELEMENT environment (fog?, skyBox?, skyDome?, skyPlane?, clipping?, colourAmbient?, colourBackground?, userDataReference?)>
+<!ELEMENT environment (fog?, skyBox?, skyDome?, skyPlane?, clipping?, colourAmbient?, colourBackground?)>
  
 <!ELEMENT clipping EMPTY>
 <!ATTLIST clipping

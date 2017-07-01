@@ -1,4 +1,4 @@
-<!ELEMENT scene (nodes?, externals?, environment?, terrain?, userData?, octree?, light?, camera?)>
+<!ELEMENT scene (nodes?, externals?, environment?, terrain?, userData?, light?, camera?)>
 <!ATTLIST scene
     formatVersion    CDATA    #REQUIRED
     id                ID        #IMPLIED

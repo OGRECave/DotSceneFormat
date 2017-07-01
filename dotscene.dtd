@@ -1,6 +1,6 @@
 <!ELEMENT scene (nodes?, externals?, environment?, terrain?, userData?, light?, camera?)>
 <!ATTLIST scene
-    formatVersion    CDATA    #REQUIRED
+    formatVersion    CDATA    #FIXED "1.1"
     id                ID        #IMPLIED
     sceneManager    CDATA    #IMPLIED
     minOgreVersion    CDATA    #IMPLIED

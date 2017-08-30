@@ -381,6 +381,10 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
     else if(sValue == "radPoint")
         pLight->setType(Ogre::Light::LT_POINT);
 
+    // lights are oriented using SceneNodes that expect -Z to be the default direction
+    // exporters should not write normal or direction if they attach lights to nodes
+    pLight->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Z);
+
     pLight->setVisible(getAttribBool(XMLNode, "visible", true));
     pLight->setCastShadows(getAttribBool(XMLNode, "castShadows", true));
     pLight->setPowerScale(getAttribReal(XMLNode, "powerScale", 1.0));

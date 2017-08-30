@@ -401,7 +401,6 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
     if(pElement)
     {
         pLight->setDirection(parseVector3(pElement));
-        mLightDirection = parseVector3(pElement);
     }
 
     // Process colourDiffuse (?)

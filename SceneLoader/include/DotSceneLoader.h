@@ -75,7 +75,6 @@
         Ogre::String m_sPrependNode;
         Ogre::TerrainGroup* mTerrainGroup;
         Ogre::Vector3 mTerrainPosition;
-        Ogre::Vector3 mLightDirection;
         Ogre::ColourValue mBackgroundColour;
     };
 

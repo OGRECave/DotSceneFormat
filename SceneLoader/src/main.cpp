@@ -33,7 +33,7 @@ void SceneLoadSample::setup(void)
 
     // get a pointer to the already created root
     Ogre::Root* root = getRoot();
-    Ogre::SceneManager* scnMgr = root->createSceneManager(Ogre::ST_GENERIC);
+    Ogre::SceneManager* scnMgr = root->createSceneManager("DefaultSceneManager");
 
     // register our scene with the RTSS
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();

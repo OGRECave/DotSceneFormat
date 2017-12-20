@@ -14,9 +14,5 @@ endif()
 include_directories(${OGRE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include/)
 link_directories(${OGRE_LIBRARY_DIRS})
 
-# copy essential config files next to our binary where OGRE autodiscovers them
-file(COPY ${OGRE_CONFIG_DIR}/plugins.cfg ${OGRE_CONFIG_DIR}/resources.cfg 
-     DESTINATION ${CMAKE_BINARY_DIR})
-
 add_executable(DotSceneLoader src/main.cpp src/DotSceneLoader.cpp)
 target_link_libraries(DotSceneLoader ${OGRE_LIBRARIES})

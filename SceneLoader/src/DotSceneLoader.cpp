@@ -732,16 +732,6 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 
     rapidxml::xml_node<>* pElement;
 
-    // Process vertexBuffer (?)
-    pElement = XMLNode->first_node("vertexBuffer");
-    if(pElement)
-        ;//processVertexBuffer(pElement);
-
-    // Process indexBuffer (?)
-    pElement = XMLNode->first_node("indexBuffer");
-    if(pElement)
-        ;//processIndexBuffer(pElement);
-
     // Create the entity
     Ogre::Entity *pEntity = 0;
     try

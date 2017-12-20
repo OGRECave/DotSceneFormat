@@ -73,7 +73,7 @@
     falloff CDATA    #REQUIRED
 >
  
-<!ELEMENT entity (vertexBuffer?, indexBuffer?, userData?)>
+<!ELEMENT entity (userData?)>
 <!ATTLIST entity
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -146,7 +146,7 @@
     height CDATA #IMPLIED
 >
  
-<!ELEMENT plane (normal, upVector?, vertexBuffer?, indexBuffer?)>
+<!ELEMENT plane (normal, upVector?)>
 <!ATTLIST plane
     name            CDATA    #REQUIRED
     id                ID        #IMPLIED
@@ -160,18 +160,6 @@
     vTile            CDATA        "1"
     material        CDATA    #IMPLIED
     normals            (true | false)        "true"
->
- 
-<!ELEMENT vertexBuffer EMPTY>
-<!ATTLIST vertexBuffer
-    usage        (static | dynamic | writeOnly | staticWriteOnly | dynamicWriteOnly)    "staticWriteOnly"
-    useShadow    (true | false)    "true"
->
- 
-<!ELEMENT indexBuffer EMPTY>
-<!ATTLIST indexBuffer
-    usage        (static | dynamic | writeOnly | staticWriteOnly | dynamicWriteOnly)    "staticWriteOnly"
-    useShadow    (true | false)    "true"
 >
  
 <!ELEMENT externals (item*)>

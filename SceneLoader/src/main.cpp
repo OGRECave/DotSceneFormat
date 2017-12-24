@@ -6,15 +6,20 @@
 
 class SceneLoadSample : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
+    Ogre::String mSceneFile;
+    Ogre::String mResourcePath;
 public:
-    SceneLoadSample();
+    SceneLoadSample(const Ogre::String& scene);
     void setup();
     void locateResources();
     bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
 
-SceneLoadSample::SceneLoadSample() : OgreBites::ApplicationContext("SceneLoadSample")
+SceneLoadSample::SceneLoadSample(const Ogre::String& scene)
+    : OgreBites::ApplicationContext("SceneLoadSample")
 {
+
+    Ogre::StringUtil::splitFilename(scene, mSceneFile, mResourcePath);
 }
 
 bool SceneLoadSample::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -29,7 +34,7 @@ bool SceneLoadSample::keyPressed(const OgreBites::KeyboardEvent& evt)
 void SceneLoadSample::locateResources()
 {
     OgreBites::ApplicationContext::locateResources();
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(".", "FileSystem", "Scene");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mResourcePath, "FileSystem", "Scene");
 }
 
 void SceneLoadSample::setup(void)
@@ -48,7 +53,7 @@ void SceneLoadSample::setup(void)
     shadergen->addSceneManager(scnMgr);
 
     DotSceneLoader loader;
-    loader.parseDotScene("example.scene", "Scene", scnMgr);
+    loader.parseDotScene(mSceneFile, "Scene", scnMgr);
 
     // create the camera
     Ogre::Camera* cam = scnMgr->getCameras().begin()->second;
@@ -62,10 +67,16 @@ void SceneLoadSample::setup(void)
     getRenderWindow()->addViewport(cam)->setBackgroundColour(loader.getBackgroundColour());
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    SceneLoadSample app;
+    if(argc != 2) {
+        std::cout << "usage: " << argv[0] << " file.scene" << std::endl;
+        return 1;
+    }
+
+    SceneLoadSample app(argv[1]);
     app.initApp();
     app.getRoot()->startRendering();
     app.closeApp();
+    return 0;
 }

@@ -117,11 +117,12 @@ DotSceneLoader::~DotSceneLoader()
     OGRE_DELETE mTerrainGlobalOptions;
 }
 
-void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode, const Ogre::String &sPrependNode)
+void DotSceneLoader::parseDotScene(const Ogre::String& SceneName, const Ogre::String& groupName,
+                                   Ogre::SceneNode* pAttachNode, const Ogre::String& sPrependNode)
 {
     // set up shared object values
     m_sGroupName = groupName;
-    mSceneMgr = yourSceneMgr;
+    mSceneMgr = pAttachNode->getCreator();
     m_sPrependNode = sPrependNode;
     staticObjects.clear();
     dynamicObjects.clear();
@@ -147,8 +148,6 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
 
     // figure out where to attach any nodes we create
     mAttachNode = pAttachNode;
-    if(!mAttachNode)
-        mAttachNode = mSceneMgr->getRootSceneNode();
 
     // Process the scene
     processScene(XMLRoot);

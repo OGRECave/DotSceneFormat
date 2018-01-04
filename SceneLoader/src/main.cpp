@@ -53,7 +53,7 @@ void SceneLoadSample::setup(void)
     shadergen->addSceneManager(scnMgr);
 
     DotSceneLoader loader;
-    loader.parseDotScene(mSceneFile, "Scene", scnMgr);
+    loader.parseDotScene(mSceneFile, "Scene", scnMgr->getRootSceneNode());
 
     // create the camera
     Ogre::Camera* cam = scnMgr->getCameras().begin()->second;

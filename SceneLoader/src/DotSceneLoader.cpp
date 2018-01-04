@@ -192,7 +192,7 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
     // Process userDataReference (?)
     pElement = XMLRoot->first_node("userData");
     if(pElement)
-        processUserData(pElement, mAttachNode);
+        processUserData(pElement, mAttachNode->getUserObjectBindings());
 
     // Process light (?)
     pElement = XMLRoot->first_node("light");
@@ -431,7 +431,7 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
     // Process userDataReference (?)
     pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserData(pElement, pLight);
+        processUserData(pElement, pLight->getUserObjectBindings());
 }
 
 void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -506,7 +506,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     // Process userDataReference (?)
     pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserData(pElement, pCamera);
+        processUserData(pElement, static_cast<Ogre::MovableObject*>(pCamera)->getUserObjectBindings());
 }
 
 void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -632,7 +632,7 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
     // Process userDataReference (?)
     pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserData(pElement, pNode);
+        processUserData(pElement, pNode->getUserObjectBindings());
 }
 
 void DotSceneLoader::processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -751,7 +751,7 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     // Process userDataReference (?)
     pElement = XMLNode->first_node("userData");
     if(pElement)
-        processUserData(pElement, pEntity);
+        processUserData(pElement, pEntity->getUserObjectBindings());
 
     
 }
@@ -940,8 +940,7 @@ void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre
     pLight->setAttenuation(range, constant, linear, quadratic);
 }
 
-template<class T>
-static void _processUserData(rapidxml::xml_node<>* XMLNode, T *pObject)
+void DotSceneLoader::processUserData(rapidxml::xml_node<>* XMLNode, Ogre::UserObjectBindings& userData)
 {
     // Process node (*)
     rapidxml::xml_node<>* pElement = XMLNode->first_node("property");
@@ -961,14 +960,8 @@ static void _processUserData(rapidxml::xml_node<>* XMLNode, T *pObject)
         else
             value = data;
 
-        pObject->getUserObjectBindings().setUserAny(name, value);
+        userData.setUserAny(name, value);
         pElement = pElement->next_sibling("property");
     }
 }
 
-void DotSceneLoader::processUserData(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode) {
-    _processUserData(XMLNode, pNode);
-}
-void DotSceneLoader::processUserData(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject) {
-    _processUserData(XMLNode, pMObject);
-}

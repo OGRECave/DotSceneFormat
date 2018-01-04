@@ -50,8 +50,7 @@
         void processTerrain(rapidxml::xml_node<>* XMLNode);
         void processTerrainPage(rapidxml::xml_node<>* XMLNode);
         void processBlendmaps(rapidxml::xml_node<>* XMLNode);
-        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pNode);
-        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::MovableObject *pMObject);
+        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::UserObjectBindings& userData);
         void processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
         void processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
 

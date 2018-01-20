@@ -2,6 +2,8 @@
 #include <OgreApplicationContext.h>
 #include <OgreCameraMan.h>
 
+#include <iostream>
+
 #include "DotSceneLoader.h"
 
 class SceneLoadSample : public OgreBites::ApplicationContext, public OgreBites::InputListener

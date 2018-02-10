@@ -26,6 +26,7 @@ SceneLoadSample::SceneLoadSample(const Ogre::String& scene)
 
 bool SceneLoadSample::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
+    using namespace OgreBites;
     if (evt.keysym.sym == SDLK_ESCAPE)
     {
         getRoot()->queueEndRendering();

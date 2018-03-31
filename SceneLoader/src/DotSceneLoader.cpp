@@ -120,18 +120,22 @@ DotSceneLoader::~DotSceneLoader()
 void DotSceneLoader::parseDotScene(const Ogre::String& SceneName, const Ogre::String& groupName,
                                    Ogre::SceneNode* pAttachNode, const Ogre::String& sPrependNode)
 {
-    // set up shared object values
-    m_sGroupName = groupName;
-    mSceneMgr = pAttachNode->getCreator();
     m_sPrependNode = sPrependNode;
+    Ogre::DataStreamPtr stream = Ogre::Root::openFileStream(SceneName, groupName);
+    load(stream, groupName, pAttachNode);
+}
+
+void DotSceneLoader::load(Ogre::DataStreamPtr& stream, const Ogre::String& groupName,
+                          Ogre::SceneNode* rootNode)
+{
+    m_sGroupName = groupName;
+    mSceneMgr = rootNode->getCreator();
     staticObjects.clear();
     dynamicObjects.clear();
 
     rapidxml::xml_document<> XMLDoc;    // character type defaults to char
-
     rapidxml::xml_node<>* XMLRoot;
 
-    Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
     char* scene = strdup(stream->getAsString().c_str());
     XMLDoc.parse<0>(scene);
 
@@ -147,7 +151,7 @@ void DotSceneLoader::parseDotScene(const Ogre::String& SceneName, const Ogre::St
     }
 
     // figure out where to attach any nodes we create
-    mAttachNode = pAttachNode;
+    mAttachNode = rootNode;
 
     // Process the scene
     processScene(XMLRoot);

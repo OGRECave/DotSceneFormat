@@ -28,6 +28,9 @@
         DotSceneLoader();
         virtual ~DotSceneLoader();
 
+        void load(Ogre::DataStreamPtr& stream, const Ogre::String& groupName,
+                  Ogre::SceneNode* rootNode);
+
         void parseDotScene(const Ogre::String& SceneName,
                            const Ogre::String& groupName,
                            Ogre::SceneNode* pAttachNode,

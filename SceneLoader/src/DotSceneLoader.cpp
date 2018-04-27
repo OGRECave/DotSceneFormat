@@ -1,8 +1,10 @@
 #include "DotSceneLoader.h"
 #include <Ogre.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
-#include <Terrain/OgreTerrainMaterialGeneratorA.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
+#include <OgreTerrainMaterialGeneratorA.h>
+
+#include <OgreSceneLoaderManager.h>
 
 namespace {
 Ogre::String getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, const Ogre::String &defaultValue = "")
@@ -104,11 +106,13 @@ Ogre::ColourValue parseColour(rapidxml::xml_node<>* XMLNode)
 DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0), mBackgroundColour(Ogre::ColourValue::Black)
 {
     mTerrainGlobalOptions = OGRE_NEW Ogre::TerrainGlobalOptions();
+    Ogre::SceneLoaderManager::getSingleton().registerSceneLoader("DotScene", {".scene"}, this);
 }
-
 
 DotSceneLoader::~DotSceneLoader()
 {
+    Ogre::SceneLoaderManager::getSingleton().unregisterSceneLoader("DotScene");
+
     if(mTerrainGroup)
     {
         OGRE_DELETE mTerrainGroup;

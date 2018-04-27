@@ -9,6 +9,8 @@
 #include <OgreResourceGroupManager.h>
 #include <vector>
 
+#include <OgreSceneLoader.h>
+
 #include "rapidxml.hpp"
 
     // Forward declarations
@@ -20,7 +22,7 @@
         class TerrainGlobalOptions;
     }
 
-    class DotSceneLoader
+    class DotSceneLoader : public Ogre::SceneLoader
     {
     public:
         Ogre::TerrainGlobalOptions *mTerrainGlobalOptions;

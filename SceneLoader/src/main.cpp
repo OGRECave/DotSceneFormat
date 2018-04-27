@@ -4,7 +4,8 @@
 
 #include <iostream>
 
-#include "DotSceneLoader.h"
+#include <OgreSceneLoaderManager.h>
+#include "OgreDotScenePlugin.h"
 
 class SceneLoadSample : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
@@ -49,14 +50,16 @@ void SceneLoadSample::setup(void)
 
     // get a pointer to the already created root
     Ogre::Root* root = getRoot();
+    // register the scene loader
+    getRoot()->installPlugin(new DotScenePlugin);
+
     Ogre::SceneManager* scnMgr = root->createSceneManager("DefaultSceneManager");
 
     // register our scene with the RTSS
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(scnMgr);
 
-    DotSceneLoader loader;
-    loader.parseDotScene(mSceneFile, "Scene", scnMgr->getRootSceneNode());
+    Ogre::SceneLoaderManager::getSingleton().load(mSceneFile, "Scene", scnMgr->getRootSceneNode());
 
     // create the camera
     Ogre::Camera* cam = scnMgr->getCameras().begin()->second;
@@ -67,7 +70,7 @@ void SceneLoadSample::setup(void)
     addInputListener(camman);
 
     // and tell it to render into the main window
-    getRenderWindow()->addViewport(cam)->setBackgroundColour(loader.getBackgroundColour());
+    getRenderWindow()->addViewport(cam);
 }
 
 int main(int argc, char* argv[])

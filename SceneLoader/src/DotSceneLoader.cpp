@@ -107,7 +107,6 @@ ColourValue parseColour(rapidxml::xml_node<> *XMLNode)
 
 DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0), mBackgroundColour(ColourValue::Black)
 {
-    mTerrainGlobalOptions = OGRE_NEW TerrainGlobalOptions();
     SceneLoaderManager::getSingleton().registerSceneLoader("DotScene", {".scene"}, this);
 }
 
@@ -119,8 +118,6 @@ DotSceneLoader::~DotSceneLoader()
     {
         OGRE_DELETE mTerrainGroup;
     }
-
-    OGRE_DELETE mTerrainGlobalOptions;
 }
 
 void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupName,
@@ -295,20 +292,11 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<> *XMLNode)
     int compositeMapDistance = StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
     int maxPixelError = StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
 
-    Vector3 lightdir(0, -0.3, 0.75);
-    lightdir.normalise();
-    Light *l = mSceneMgr->createLight("tstLight");
-    l->setType(Light::LT_DIRECTIONAL);
-    l->setDirection(lightdir);
-    l->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
-    l->setSpecularColour(ColourValue(0.4, 0.4, 0.4));
-    mSceneMgr->setAmbientLight(ColourValue(0.6, 0.6, 0.6));
+    auto terrainGlobalOptions = TerrainGlobalOptions::getSingletonPtr();
+    OgreAssert(terrainGlobalOptions, "TerrainGlobalOptions not available");
 
-    mTerrainGlobalOptions->setMaxPixelError((Real)maxPixelError);
-    mTerrainGlobalOptions->setCompositeMapDistance((Real)compositeMapDistance);
-    mTerrainGlobalOptions->setLightMapDirection(lightdir);
-    mTerrainGlobalOptions->setCompositeMapAmbient(mSceneMgr->getAmbientLight());
-    mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
+    terrainGlobalOptions->setMaxPixelError((Real)maxPixelError);
+    terrainGlobalOptions->setCompositeMapDistance((Real)compositeMapDistance);
 
     mTerrainGroup = OGRE_NEW TerrainGroup(mSceneMgr, Terrain::ALIGN_X_Z, mapSize, worldSize);
     mTerrainGroup->setOrigin(Vector3::ZERO);
@@ -780,7 +768,7 @@ void DotSceneLoader::processFog(rapidxml::xml_node<> *XMLNode)
 
     // Process colourDiffuse (?)
     ColourValue colourDiffuse = ColourValue::White;
-    
+
     if (auto pElement = XMLNode->first_node("colour"))
         colourDiffuse = parseColour(pElement);
 
@@ -800,7 +788,7 @@ void DotSceneLoader::processSkyBox(rapidxml::xml_node<> *XMLNode)
 
     // Process rotation (?)
     Quaternion rotation = Quaternion::IDENTITY;
-    
+
     if (auto pElement = XMLNode->first_node("rotation"))
         rotation = parseQuaternion(pElement);
 

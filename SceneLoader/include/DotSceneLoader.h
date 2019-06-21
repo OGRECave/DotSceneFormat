@@ -19,14 +19,11 @@
         class SceneManager;
         class SceneNode;
         class TerrainGroup;
-        class TerrainGlobalOptions;
     }
 
     class DotSceneLoader : public Ogre::SceneLoader
     {
-    public:
-        Ogre::TerrainGlobalOptions *mTerrainGlobalOptions;
-        
+    public:        
         DotSceneLoader();
         virtual ~DotSceneLoader();
 

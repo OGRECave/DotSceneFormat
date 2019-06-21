@@ -40,9 +40,6 @@
         const Ogre::ColourValue& getBackgroundColour() {
             return mBackgroundColour;
         }
-
-        std::vector<Ogre::String> staticObjects;
-        std::vector<Ogre::String> dynamicObjects;
     protected:
         void processScene(rapidxml::xml_node<>* XMLRoot);
 

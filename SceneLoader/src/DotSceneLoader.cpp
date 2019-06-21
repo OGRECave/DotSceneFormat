@@ -133,8 +133,6 @@ void DotSceneLoader::load(DataStreamPtr &stream, const String &groupName,
 {
     m_sGroupName = groupName;
     mSceneMgr = rootNode->getCreator();
-    staticObjects.clear();
-    dynamicObjects.clear();
 
     rapidxml::xml_document<> XMLDoc; // character type defaults to char
     rapidxml::xml_node<> *XMLRoot;
@@ -623,14 +621,7 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<> *XMLNode, SceneNode *pPa
     String id = getAttrib(XMLNode, "id");
     String meshFile = getAttrib(XMLNode, "meshFile");
     String material = getAttrib(XMLNode, "material");
-    bool isStatic = getAttribBool(XMLNode, "static", false);
     bool castShadows = getAttribBool(XMLNode, "castShadows", true);
-
-    // TEMP: Maintain a list of static and dynamic objects
-    if (isStatic)
-        staticObjects.push_back(name);
-    else
-        dynamicObjects.push_back(name);
 
     // Create the entity
     Entity *pEntity = 0;

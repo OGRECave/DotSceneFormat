@@ -1,0 +1,3 @@
+[submodule "SceneLoader/src/pugixml"]
+	path = SceneLoader/src/pugixml
+	url = https://github.com/zeux/pugixml.git

@@ -15,10 +15,10 @@ else()
 endif()
 
 # the search paths
-include_directories(${OGRE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include/)
+include_directories(${OGRE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include/ src/pugixml/src/)
 link_directories(${OGRE_LIBRARY_DIRS})
 
-add_library(Plugin_DotSceneLoader SHARED src/DotSceneLoader.cpp src/OgreDotScenePlugin.cpp)
+add_library(Plugin_DotSceneLoader SHARED src/DotSceneLoader.cpp src/OgreDotScenePlugin.cpp src/pugixml/src/pugixml.cpp)
 target_link_libraries(Plugin_DotSceneLoader OgreTerrain)
 set_target_properties(Plugin_DotSceneLoader PROPERTIES PREFIX "")
 

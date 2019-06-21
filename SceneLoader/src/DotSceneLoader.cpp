@@ -6,102 +6,103 @@
 
 #include <OgreSceneLoaderManager.h>
 
+#include <pugixml.hpp>
+
 using namespace Ogre;
 
 namespace
 {
-String getAttrib(rapidxml::xml_node<> *XMLNode, const String &attrib, const String &defaultValue = "")
+String getAttrib(const pugi::xml_node& XMLNode, const String &attrib, const String &defaultValue = "")
 {
-    if (XMLNode->first_attribute(attrib.c_str()))
-        return XMLNode->first_attribute(attrib.c_str())->value();
+    if (auto anode = XMLNode.attribute(attrib.c_str()))
+        return anode.value();
     else
         return defaultValue;
 }
 
-Real getAttribReal(rapidxml::xml_node<> *XMLNode, const String &attrib, Real defaultValue = 0)
+Real getAttribReal(const pugi::xml_node& XMLNode, const String &attrib, Real defaultValue = 0)
 {
-    if (XMLNode->first_attribute(attrib.c_str()))
-        return StringConverter::parseReal(XMLNode->first_attribute(attrib.c_str())->value());
+    if (auto anode = XMLNode.attribute(attrib.c_str()))
+        return StringConverter::parseReal(anode.value());
     else
         return defaultValue;
 }
 
-bool getAttribBool(rapidxml::xml_node<> *XMLNode, const String &attrib, bool defaultValue = false)
+bool getAttribBool(const pugi::xml_node& XMLNode, const String &attrib, bool defaultValue = false)
 {
-    if (!XMLNode->first_attribute(attrib.c_str()))
+    if (auto anode = XMLNode.attribute(attrib.c_str()))
+        return anode.as_bool();
+    else
         return defaultValue;
-
-    if (String(XMLNode->first_attribute(attrib.c_str())->value()) == "true")
-        return true;
 
     return false;
 }
 
-Vector3 parseVector3(rapidxml::xml_node<> *XMLNode)
+Vector3 parseVector3(const pugi::xml_node& XMLNode)
 {
     return Vector3(
-        StringConverter::parseReal(XMLNode->first_attribute("x")->value()),
-        StringConverter::parseReal(XMLNode->first_attribute("y")->value()),
-        StringConverter::parseReal(XMLNode->first_attribute("z")->value()));
+        StringConverter::parseReal(XMLNode.attribute("x").value()),
+        StringConverter::parseReal(XMLNode.attribute("y").value()),
+        StringConverter::parseReal(XMLNode.attribute("z").value()));
 }
 
-Quaternion parseQuaternion(rapidxml::xml_node<> *XMLNode)
+Quaternion parseQuaternion(const pugi::xml_node& XMLNode)
 {
     //! @todo Fix this crap!
 
     Quaternion orientation;
 
-    if (XMLNode->first_attribute("qw"))
+    if (XMLNode.attribute("qw"))
     {
-        orientation.w = StringConverter::parseReal(XMLNode->first_attribute("qw")->value());
-        orientation.x = StringConverter::parseReal(XMLNode->first_attribute("qx")->value());
-        orientation.y = StringConverter::parseReal(XMLNode->first_attribute("qy")->value());
-        orientation.z = StringConverter::parseReal(XMLNode->first_attribute("qz")->value());
+        orientation.w = StringConverter::parseReal(XMLNode.attribute("qw").value());
+        orientation.x = StringConverter::parseReal(XMLNode.attribute("qx").value());
+        orientation.y = StringConverter::parseReal(XMLNode.attribute("qy").value());
+        orientation.z = StringConverter::parseReal(XMLNode.attribute("qz").value());
     }
-    else if (XMLNode->first_attribute("axisX"))
+    else if (XMLNode.attribute("axisX"))
     {
         Vector3 axis;
-        axis.x = StringConverter::parseReal(XMLNode->first_attribute("axisX")->value());
-        axis.y = StringConverter::parseReal(XMLNode->first_attribute("axisY")->value());
-        axis.z = StringConverter::parseReal(XMLNode->first_attribute("axisZ")->value());
-        Real angle = StringConverter::parseReal(XMLNode->first_attribute("angle")->value());
+        axis.x = StringConverter::parseReal(XMLNode.attribute("axisX").value());
+        axis.y = StringConverter::parseReal(XMLNode.attribute("axisY").value());
+        axis.z = StringConverter::parseReal(XMLNode.attribute("axisZ").value());
+        Real angle = StringConverter::parseReal(XMLNode.attribute("angle").value());
         ;
         orientation.FromAngleAxis(Angle(angle), axis);
     }
-    else if (XMLNode->first_attribute("angleX"))
+    else if (XMLNode.attribute("angleX"))
     {
         Matrix3 rot;
         rot.FromEulerAnglesXYZ(
-            StringConverter::parseAngle(XMLNode->first_attribute("angleX")->value()),
-            StringConverter::parseAngle(XMLNode->first_attribute("angleY")->value()),
-            StringConverter::parseAngle(XMLNode->first_attribute("angleZ")->value()));
+            StringConverter::parseAngle(XMLNode.attribute("angleX").value()),
+            StringConverter::parseAngle(XMLNode.attribute("angleY").value()),
+            StringConverter::parseAngle(XMLNode.attribute("angleZ").value()));
         orientation.FromRotationMatrix(rot);
     }
-    else if (XMLNode->first_attribute("x"))
+    else if (XMLNode.attribute("x"))
     {
-        orientation.x = StringConverter::parseReal(XMLNode->first_attribute("x")->value());
-        orientation.y = StringConverter::parseReal(XMLNode->first_attribute("y")->value());
-        orientation.z = StringConverter::parseReal(XMLNode->first_attribute("z")->value());
-        orientation.w = StringConverter::parseReal(XMLNode->first_attribute("w")->value());
+        orientation.x = StringConverter::parseReal(XMLNode.attribute("x").value());
+        orientation.y = StringConverter::parseReal(XMLNode.attribute("y").value());
+        orientation.z = StringConverter::parseReal(XMLNode.attribute("z").value());
+        orientation.w = StringConverter::parseReal(XMLNode.attribute("w").value());
     }
-    else if (XMLNode->first_attribute("w"))
+    else if (XMLNode.attribute("w"))
     {
-        orientation.w = StringConverter::parseReal(XMLNode->first_attribute("w")->value());
-        orientation.x = StringConverter::parseReal(XMLNode->first_attribute("x")->value());
-        orientation.y = StringConverter::parseReal(XMLNode->first_attribute("y")->value());
-        orientation.z = StringConverter::parseReal(XMLNode->first_attribute("z")->value());
+        orientation.w = StringConverter::parseReal(XMLNode.attribute("w").value());
+        orientation.x = StringConverter::parseReal(XMLNode.attribute("x").value());
+        orientation.y = StringConverter::parseReal(XMLNode.attribute("y").value());
+        orientation.z = StringConverter::parseReal(XMLNode.attribute("z").value());
     }
 
     return orientation;
 }
 
-ColourValue parseColour(rapidxml::xml_node<> *XMLNode)
+ColourValue parseColour(pugi::xml_node& XMLNode)
 {
     return ColourValue(
-        StringConverter::parseReal(XMLNode->first_attribute("r")->value()),
-        StringConverter::parseReal(XMLNode->first_attribute("g")->value()),
-        StringConverter::parseReal(XMLNode->first_attribute("b")->value()),
-        XMLNode->first_attribute("a") != NULL ? StringConverter::parseReal(XMLNode->first_attribute("a")->value()) : 1);
+        StringConverter::parseReal(XMLNode.attribute("r").value()),
+        StringConverter::parseReal(XMLNode.attribute("g").value()),
+        StringConverter::parseReal(XMLNode.attribute("b").value()),
+        XMLNode.attribute("a") != NULL ? StringConverter::parseReal(XMLNode.attribute("a").value()) : 1);
 }
 } // namespace
 
@@ -134,20 +135,22 @@ void DotSceneLoader::load(DataStreamPtr &stream, const String &groupName,
     m_sGroupName = groupName;
     mSceneMgr = rootNode->getCreator();
 
-    rapidxml::xml_document<> XMLDoc; // character type defaults to char
-    rapidxml::xml_node<> *XMLRoot;
+    pugi::xml_document XMLDoc; // character type defaults to char
 
-    char *scene = strdup(stream->getAsString().c_str());
-    XMLDoc.parse<0>(scene);
+    auto result = XMLDoc.load_buffer(stream->getAsString().c_str(), stream->size());
+    if(!result)
+    {
+        LogManager::getSingleton().stream(LML_CRITICAL) << "[DotSceneLoader] " << result.description();
+        return;
+    }
 
     // Grab the scene node
-    XMLRoot = XMLDoc.first_node("scene");
+    auto XMLRoot = XMLDoc.child("scene");
 
     // Validate the File
     if (getAttrib(XMLRoot, "formatVersion", "") == "")
     {
-        LogManager::getSingleton().logMessage("[DotSceneLoader] Error: Invalid .scene File. Missing <scene>");
-        delete scene;
+        LogManager::getSingleton().logError("[DotSceneLoader] Invalid .scene File. Missing <scene>");
         return;
     }
 
@@ -156,135 +159,129 @@ void DotSceneLoader::load(DataStreamPtr &stream, const String &groupName,
 
     // Process the scene
     processScene(XMLRoot);
-
-    delete scene;
 }
 
-void DotSceneLoader::processScene(rapidxml::xml_node<> *XMLRoot)
+void DotSceneLoader::processScene(pugi::xml_node& XMLRoot)
 {
     // Process the scene parameters
     String version = getAttrib(XMLRoot, "formatVersion", "unknown");
 
     String message = "[DotSceneLoader] Parsing dotScene file with version " + version;
-    if (XMLRoot->first_attribute("ID"))
-        message += ", id " + String(XMLRoot->first_attribute("ID")->value());
-    if (XMLRoot->first_attribute("sceneManager"))
-        message += ", scene manager " + String(XMLRoot->first_attribute("sceneManager")->value());
-    if (XMLRoot->first_attribute("minOgreVersion"))
-        message += ", min. Ogre version " + String(XMLRoot->first_attribute("minOgreVersion")->value());
-    if (XMLRoot->first_attribute("author"))
-        message += ", author " + String(XMLRoot->first_attribute("author")->value());
+    if (XMLRoot.attribute("ID"))
+        message += ", id " + String(XMLRoot.attribute("ID").value());
+    if (XMLRoot.attribute("sceneManager"))
+        message += ", scene manager " + String(XMLRoot.attribute("sceneManager").value());
+    if (XMLRoot.attribute("minOgreVersion"))
+        message += ", min. Ogre version " + String(XMLRoot.attribute("minOgreVersion").value());
+    if (XMLRoot.attribute("author"))
+        message += ", author " + String(XMLRoot.attribute("author").value());
 
     LogManager::getSingleton().logMessage(message);
 
     // Process environment (?)
-    if (auto pElement = XMLRoot->first_node("environment"))
+    if (auto pElement = XMLRoot.child("environment"))
         processEnvironment(pElement);
 
     // Process nodes (?)
-    if (auto pElement = XMLRoot->first_node("nodes"))
+    if (auto pElement = XMLRoot.child("nodes"))
         processNodes(pElement);
 
     // Process externals (?)
-    if (auto pElement = XMLRoot->first_node("externals"))
+    if (auto pElement = XMLRoot.child("externals"))
         processExternals(pElement);
 
     // Process userDataReference (?)
-    if (auto pElement = XMLRoot->first_node("userData"))
+    if (auto pElement = XMLRoot.child("userData"))
         processUserData(pElement, mAttachNode->getUserObjectBindings());
 
     // Process light (?)
-    if (auto pElement = XMLRoot->first_node("light"))
+    if (auto pElement = XMLRoot.child("light"))
         processLight(pElement);
 
     // Process camera (?)
-    if (auto pElement = XMLRoot->first_node("camera"))
+    if (auto pElement = XMLRoot.child("camera"))
         processCamera(pElement);
 
     // Process terrain (?)
-    if (auto pElement = XMLRoot->first_node("terrain"))
+    if (auto pElement = XMLRoot.child("terrain"))
         processTerrain(pElement);
 }
 
-void DotSceneLoader::processNodes(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processNodes(pugi::xml_node& XMLNode)
 {
-    rapidxml::xml_node<> *pElement;
-
     // Process node (*)
-    pElement = XMLNode->first_node("node");
-    while (pElement)
+    for (auto pElement : XMLNode.children("node"))
     {
         processNode(pElement);
-        pElement = pElement->next_sibling("node");
     }
 
     // Process position (?)
-    if (auto pElement = XMLNode->first_node("position"))
+    if (auto pElement = XMLNode.child("position"))
     {
         mAttachNode->setPosition(parseVector3(pElement));
         mAttachNode->setInitialState();
     }
 
     // Process rotation (?)
-    if (auto pElement = XMLNode->first_node("rotation"))
+    if (auto pElement = XMLNode.child("rotation"))
     {
         mAttachNode->setOrientation(parseQuaternion(pElement));
         mAttachNode->setInitialState();
     }
 
     // Process scale (?)
-    if (auto pElement = XMLNode->first_node("scale"))
+    if (auto pElement = XMLNode.child("scale"))
     {
         mAttachNode->setScale(parseVector3(pElement));
         mAttachNode->setInitialState();
     }
 }
 
-void DotSceneLoader::processExternals(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processExternals(pugi::xml_node& XMLNode)
 {
     //! @todo Implement this
 }
 
-void DotSceneLoader::processEnvironment(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processEnvironment(pugi::xml_node& XMLNode)
 {
     // Process camera (?)
-    if (auto pElement = XMLNode->first_node("camera"))
+    if (auto pElement = XMLNode.child("camera"))
         processCamera(pElement);
 
     // Process fog (?)
-    if (auto pElement = XMLNode->first_node("fog"))
+    if (auto pElement = XMLNode.child("fog"))
         processFog(pElement);
 
     // Process skyBox (?)
-    if (auto pElement = XMLNode->first_node("skyBox"))
+    if (auto pElement = XMLNode.child("skyBox"))
         processSkyBox(pElement);
 
     // Process skyDome (?)
-    if (auto pElement = XMLNode->first_node("skyDome"))
+    if (auto pElement = XMLNode.child("skyDome"))
         processSkyDome(pElement);
 
     // Process skyPlane (?)
-    if (auto pElement = XMLNode->first_node("skyPlane"))
+    if (auto pElement = XMLNode.child("skyPlane"))
         processSkyPlane(pElement);
 
     // Process colourAmbient (?)
-    if (auto pElement = XMLNode->first_node("colourAmbient"))
+    if (auto pElement = XMLNode.child("colourAmbient"))
         mSceneMgr->setAmbientLight(parseColour(pElement));
 
     // Process colourBackground (?)
-    if (auto pElement = XMLNode->first_node("colourBackground"))
+    if (auto pElement = XMLNode.child("colourBackground"))
         mBackgroundColour = parseColour(pElement);
 }
 
-void DotSceneLoader::processTerrain(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processTerrain(pugi::xml_node& XMLNode)
 {
     Real worldSize = getAttribReal(XMLNode, "worldSize");
-    int mapSize = StringConverter::parseInt(XMLNode->first_attribute("mapSize")->value());
+    int mapSize = StringConverter::parseInt(XMLNode.attribute("mapSize").value());
     // TODO: unused
     // bool colourmapEnabled = getAttribBool(XMLNode, "colourmapEnabled");
-    // int colourMapTextureSize = StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
-    int compositeMapDistance = StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
-    int maxPixelError = StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
+    // int colourMapTextureSize = StringConverter::parseInt(XMLNode.attribute("colourMapTextureSize").value());
+    int compositeMapDistance = StringConverter::parseInt(XMLNode.attribute("tuningCompositeMapDistance").value());
+    int maxPixelError = StringConverter::parseInt(XMLNode.attribute("tuningMaxPixelError").value());
 
     auto terrainGlobalOptions = TerrainGlobalOptions::getSingletonPtr();
     OgreAssert(terrainGlobalOptions, "TerrainGlobalOptions not available");
@@ -297,13 +294,11 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<> *XMLNode)
     mTerrainGroup->setResourceGroup(m_sGroupName);
 
     // Process terrain pages (*)
-    if (auto pElement = XMLNode->first_node("terrainPages"))
+    if (auto pElement = XMLNode.child("terrainPages"))
     {
-        auto pPageElement = pElement->first_node("terrainPage");
-        while (pPageElement)
+        for (auto pPageElement : pElement.children("terrainPage"))
         {
             processTerrainPage(pPageElement);
-            pPageElement = pPageElement->next_sibling("terrainPage");
         }
     }
     mTerrainGroup->loadAllTerrains(true);
@@ -312,11 +307,11 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<> *XMLNode)
     //mTerrain->setPosition(mTerrainPosition);
 }
 
-void DotSceneLoader::processTerrainPage(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processTerrainPage(pugi::xml_node& XMLNode)
 {
     String name = getAttrib(XMLNode, "name");
-    int pageX = StringConverter::parseInt(XMLNode->first_attribute("pageX")->value());
-    int pageY = StringConverter::parseInt(XMLNode->first_attribute("pageY")->value());
+    int pageX = StringConverter::parseInt(XMLNode.attribute("pageX").value());
+    int pageY = StringConverter::parseInt(XMLNode.attribute("pageY").value());
 
     if (ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), name))
     {
@@ -324,7 +319,7 @@ void DotSceneLoader::processTerrainPage(rapidxml::xml_node<> *XMLNode)
     }
 }
 
-void DotSceneLoader::processLight(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processLight(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Process attributes
     String name = getAttrib(XMLNode, "name");
@@ -354,29 +349,29 @@ void DotSceneLoader::processLight(rapidxml::xml_node<> *XMLNode, SceneNode *pPar
     pLight->setPowerScale(getAttribReal(XMLNode, "powerScale", 1.0));
 
     // Process colourDiffuse (?)
-    if (auto pElement = XMLNode->first_node("colourDiffuse"))
+    if (auto pElement = XMLNode.child("colourDiffuse"))
         pLight->setDiffuseColour(parseColour(pElement));
 
     // Process colourSpecular (?)
-    if (auto pElement = XMLNode->first_node("colourSpecular"))
+    if (auto pElement = XMLNode.child("colourSpecular"))
         pLight->setSpecularColour(parseColour(pElement));
 
     if (sValue != "directional")
     {
         // Process lightRange (?)
-        if (auto pElement = XMLNode->first_node("lightRange"))
+        if (auto pElement = XMLNode.child("lightRange"))
             processLightRange(pElement, pLight);
 
         // Process lightAttenuation (?)
-        if (auto pElement = XMLNode->first_node("lightAttenuation"))
+        if (auto pElement = XMLNode.child("lightAttenuation"))
             processLightAttenuation(pElement, pLight);
     }
     // Process userDataReference (?)
-    if (auto pElement = XMLNode->first_node("userData"))
+    if (auto pElement = XMLNode.child("userData"))
         processUserData(pElement, pLight->getUserObjectBindings());
 }
 
-void DotSceneLoader::processCamera(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processCamera(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Process attributes
     String name = getAttrib(XMLNode, "name");
@@ -408,7 +403,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<> *XMLNode, SceneNode *pPa
         pCamera->setProjectionType(PT_ORTHOGRAPHIC);
 
     // Process clipping (?)
-    if (auto pElement = XMLNode->first_node("clipping"))
+    if (auto pElement = XMLNode.child("clipping"))
     {
         Real nearDist = getAttribReal(pElement, "near");
         pCamera->setNearClipDistance(nearDist);
@@ -418,11 +413,11 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<> *XMLNode, SceneNode *pPa
     }
 
     // Process userDataReference (?)
-    if (auto pElement = XMLNode->first_node("userData"))
+    if (auto pElement = XMLNode.child("userData"))
         processUserData(pElement, static_cast<MovableObject *>(pCamera)->getUserObjectBindings());
 }
 
-void DotSceneLoader::processNode(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processNode(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Construct the node's name
     String name = m_sPrependNode + getAttrib(XMLNode, "name");
@@ -451,97 +446,82 @@ void DotSceneLoader::processNode(rapidxml::xml_node<> *XMLNode, SceneNode *pPare
     //bool isTarget = getAttribBool(XMLNode, "isTarget"); // TODO: unused
 
     // Process position (?)
-    if (auto pElement = XMLNode->first_node("position"))
+    if (auto pElement = XMLNode.child("position"))
     {
         pNode->setPosition(parseVector3(pElement));
         pNode->setInitialState();
     }
 
     // Process rotation (?)
-    if (auto pElement = XMLNode->first_node("rotation"))
+    if (auto pElement = XMLNode.child("rotation"))
     {
         pNode->setOrientation(parseQuaternion(pElement));
         pNode->setInitialState();
     }
 
     // Process scale (?)
-    if (auto pElement = XMLNode->first_node("scale"))
+    if (auto pElement = XMLNode.child("scale"))
     {
         pNode->setScale(parseVector3(pElement));
         pNode->setInitialState();
     }
 
     // Process lookTarget (?)
-    if (auto pElement = XMLNode->first_node("lookTarget"))
+    if (auto pElement = XMLNode.child("lookTarget"))
         processLookTarget(pElement, pNode);
 
     // Process trackTarget (?)
-    if (auto pElement = XMLNode->first_node("trackTarget"))
+    if (auto pElement = XMLNode.child("trackTarget"))
         processTrackTarget(pElement, pNode);
 
-    rapidxml::xml_node<> *pElement;
     // Process node (*)
-    pElement = XMLNode->first_node("node");
-    while (pElement)
+    for (auto pElement : XMLNode.children("node"))
     {
         processNode(pElement, pNode);
-        pElement = pElement->next_sibling("node");
     }
 
     // Process entity (*)
-    pElement = XMLNode->first_node("entity");
-    while (pElement)
+    for (auto pElement : XMLNode.children("entity"))
     {
         processEntity(pElement, pNode);
-        pElement = pElement->next_sibling("entity");
     }
 
     // Process light (*)
-    pElement = XMLNode->first_node("light");
-    while (pElement)
+    for (auto pElement : XMLNode.children("light"))
     {
         processLight(pElement, pNode);
-        pElement = pElement->next_sibling("light");
     }
 
     // Process camera (*)
-    pElement = XMLNode->first_node("camera");
-    while (pElement)
+    for (auto pElement : XMLNode.children("camera"))
     {
         processCamera(pElement, pNode);
-        pElement = pElement->next_sibling("camera");
     }
 
     // Process particleSystem (*)
-    pElement = XMLNode->first_node("particleSystem");
-    while (pElement)
+    for (auto pElement : XMLNode.children("particleSystem"))
     {
         processParticleSystem(pElement, pNode);
-        pElement = pElement->next_sibling("particleSystem");
     }
 
     // Process billboardSet (*)
-    pElement = XMLNode->first_node("billboardSet");
-    while (pElement)
+    for (auto pElement : XMLNode.children("billboardSet"))
     {
         processBillboardSet(pElement, pNode);
-        pElement = pElement->next_sibling("billboardSet");
     }
 
     // Process plane (*)
-    pElement = XMLNode->first_node("plane");
-    while (pElement)
+    for (auto pElement : XMLNode.children("plane"))
     {
         processPlane(pElement, pNode);
-        pElement = pElement->next_sibling("plane");
     }
 
     // Process userDataReference (?)
-    if (auto pElement = XMLNode->first_node("userData"))
+    if (auto pElement = XMLNode.child("userData"))
         processUserData(pElement, pNode->getUserObjectBindings());
 }
 
-void DotSceneLoader::processLookTarget(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processLookTarget(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     //! @todo Is this correct? Cause I don't have a clue actually
 
@@ -559,12 +539,12 @@ void DotSceneLoader::processLookTarget(rapidxml::xml_node<> *XMLNode, SceneNode 
 
     // Process position (?)
     Vector3 position;
-    if (auto pElement = XMLNode->first_node("position"))
+    if (auto pElement = XMLNode.child("position"))
         position = parseVector3(pElement);
 
     // Process localDirection (?)
     Vector3 localDirection = Vector3::NEGATIVE_UNIT_Z;
-    if (auto pElement = XMLNode->first_node("localDirection"))
+    if (auto pElement = XMLNode.child("localDirection"))
         localDirection = parseVector3(pElement);
 
     // Setup the look target
@@ -584,22 +564,22 @@ void DotSceneLoader::processLookTarget(rapidxml::xml_node<> *XMLNode, SceneNode 
     }
 }
 
-void DotSceneLoader::processTrackTarget(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processTrackTarget(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Process attributes
     String nodeName = getAttrib(XMLNode, "nodeName");
 
-    rapidxml::xml_node<> *pElement;
+    pugi::xml_node pElement;
 
     // Process localDirection (?)
     Vector3 localDirection = Vector3::NEGATIVE_UNIT_Z;
-    pElement = XMLNode->first_node("localDirection");
+    pElement = XMLNode.child("localDirection");
     if (pElement)
         localDirection = parseVector3(pElement);
 
     // Process offset (?)
     Vector3 offset = Vector3::ZERO;
-    if (auto pElement = XMLNode->first_node("offset"))
+    if (auto pElement = XMLNode.child("offset"))
         offset = parseVector3(pElement);
 
     // Setup the track target
@@ -614,7 +594,7 @@ void DotSceneLoader::processTrackTarget(rapidxml::xml_node<> *XMLNode, SceneNode
     }
 }
 
-void DotSceneLoader::processEntity(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processEntity(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Process attributes
     String name = getAttrib(XMLNode, "name");
@@ -641,11 +621,11 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<> *XMLNode, SceneNode *pPa
     }
 
     // Process userDataReference (?)
-    if (auto pElement = XMLNode->first_node("userData"))
+    if (auto pElement = XMLNode.child("userData"))
         processUserData(pElement, pEntity->getUserObjectBindings());
 }
 
-void DotSceneLoader::processParticleSystem(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processParticleSystem(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     // Process attributes
     String name = getAttrib(XMLNode, "name");
@@ -667,12 +647,12 @@ void DotSceneLoader::processParticleSystem(rapidxml::xml_node<> *XMLNode, SceneN
     }
 }
 
-void DotSceneLoader::processBillboardSet(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processBillboardSet(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     //! @todo Implement this
 }
 
-void DotSceneLoader::processPlane(rapidxml::xml_node<> *XMLNode, SceneNode *pParent)
+void DotSceneLoader::processPlane(pugi::xml_node& XMLNode, SceneNode *pParent)
 {
     String name = getAttrib(XMLNode, "name");
     Real distance = getAttribReal(XMLNode, "distance");
@@ -685,8 +665,8 @@ void DotSceneLoader::processPlane(rapidxml::xml_node<> *XMLNode, SceneNode *pPar
     Real vTile = getAttribReal(XMLNode, "vTile");
     String material = getAttrib(XMLNode, "material");
     bool hasNormals = getAttribBool(XMLNode, "hasNormals");
-    Vector3 normal = parseVector3(XMLNode->first_node("normal"));
-    Vector3 up = parseVector3(XMLNode->first_node("upVector"));
+    Vector3 normal = parseVector3(XMLNode.child("normal"));
+    Vector3 up = parseVector3(XMLNode.child("upVector"));
 
     Plane plane(normal, distance);
     MeshPtr res = MeshManager::getSingletonPtr()->createPlane(
@@ -699,7 +679,7 @@ void DotSceneLoader::processPlane(rapidxml::xml_node<> *XMLNode, SceneNode *pPar
     pParent->attachObject(ent);
 }
 
-void DotSceneLoader::processFog(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processFog(pugi::xml_node& XMLNode)
 {
     // Process attributes
     Real expDensity = getAttribReal(XMLNode, "density", 0.001);
@@ -722,14 +702,14 @@ void DotSceneLoader::processFog(rapidxml::xml_node<> *XMLNode)
     // Process colourDiffuse (?)
     ColourValue colourDiffuse = ColourValue::White;
 
-    if (auto pElement = XMLNode->first_node("colour"))
+    if (auto pElement = XMLNode.child("colour"))
         colourDiffuse = parseColour(pElement);
 
     // Setup the fog
     mSceneMgr->setFog(mode, colourDiffuse, expDensity, linearStart, linearEnd);
 }
 
-void DotSceneLoader::processSkyBox(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processSkyBox(pugi::xml_node& XMLNode)
 {
     // Process attributes
     String material = getAttrib(XMLNode, "material", "BaseWhite");
@@ -742,17 +722,17 @@ void DotSceneLoader::processSkyBox(rapidxml::xml_node<> *XMLNode)
     // Process rotation (?)
     Quaternion rotation = Quaternion::IDENTITY;
 
-    if (auto pElement = XMLNode->first_node("rotation"))
+    if (auto pElement = XMLNode.child("rotation"))
         rotation = parseQuaternion(pElement);
 
     // Setup the sky box
     mSceneMgr->setSkyBox(true, material, distance, drawFirst, rotation, m_sGroupName);
 }
 
-void DotSceneLoader::processSkyDome(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processSkyDome(pugi::xml_node& XMLNode)
 {
     // Process attributes
-    String material = XMLNode->first_attribute("material")->value();
+    String material = XMLNode.attribute("material").value();
     Real curvature = getAttribReal(XMLNode, "curvature", 10);
     Real tiling = getAttribReal(XMLNode, "tiling", 8);
     Real distance = getAttribReal(XMLNode, "distance", 4000);
@@ -763,14 +743,14 @@ void DotSceneLoader::processSkyDome(rapidxml::xml_node<> *XMLNode)
 
     // Process rotation (?)
     Quaternion rotation = Quaternion::IDENTITY;
-    if (auto pElement = XMLNode->first_node("rotation"))
+    if (auto pElement = XMLNode.child("rotation"))
         rotation = parseQuaternion(pElement);
 
     // Setup the sky dome
     mSceneMgr->setSkyDome(true, material, curvature, tiling, distance, drawFirst, rotation, 16, 16, -1, m_sGroupName);
 }
 
-void DotSceneLoader::processSkyPlane(rapidxml::xml_node<> *XMLNode)
+void DotSceneLoader::processSkyPlane(pugi::xml_node& XMLNode)
 {
     // Process attributes
     String material = getAttrib(XMLNode, "material");
@@ -790,7 +770,7 @@ void DotSceneLoader::processSkyPlane(rapidxml::xml_node<> *XMLNode)
     mSceneMgr->setSkyPlane(true, plane, material, scale, tiling, drawFirst, bow, 1, 1, m_sGroupName);
 }
 
-void DotSceneLoader::processLightRange(rapidxml::xml_node<> *XMLNode, Light *pLight)
+void DotSceneLoader::processLightRange(pugi::xml_node& XMLNode, Light *pLight)
 {
     // Process attributes
     Real inner = getAttribReal(XMLNode, "inner");
@@ -801,7 +781,7 @@ void DotSceneLoader::processLightRange(rapidxml::xml_node<> *XMLNode, Light *pLi
     pLight->setSpotlightRange(Angle(inner), Angle(outer), falloff);
 }
 
-void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<> *XMLNode, Light *pLight)
+void DotSceneLoader::processLightAttenuation(pugi::xml_node& XMLNode, Light *pLight)
 {
     // Process attributes
     Real range = getAttribReal(XMLNode, "range");
@@ -813,11 +793,10 @@ void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<> *XMLNode, Ligh
     pLight->setAttenuation(range, constant, linear, quadratic);
 }
 
-void DotSceneLoader::processUserData(rapidxml::xml_node<> *XMLNode, UserObjectBindings &userData)
+void DotSceneLoader::processUserData(pugi::xml_node& XMLNode, UserObjectBindings &userData)
 {
     // Process node (*)
-    rapidxml::xml_node<> *pElement = XMLNode->first_node("property");
-    while (pElement)
+    for (auto pElement : XMLNode.children("property"))
     {
         String name = getAttrib(pElement, "name");
         String type = getAttrib(pElement, "type");
@@ -834,6 +813,5 @@ void DotSceneLoader::processUserData(rapidxml::xml_node<> *XMLNode, UserObjectBi
             value = data;
 
         userData.setUserAny(name, value);
-        pElement = pElement->next_sibling("property");
     }
 }

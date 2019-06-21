@@ -7,11 +7,7 @@
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 #include <OgreResourceGroupManager.h>
-#include <vector>
-
 #include <OgreSceneLoader.h>
-
-#include "rapidxml.hpp"
 
     // Forward declarations
     namespace Ogre
@@ -19,6 +15,11 @@
         class SceneManager;
         class SceneNode;
         class TerrainGroup;
+    }
+
+    namespace pugi
+    {
+        class xml_node;
     }
 
     class DotSceneLoader : public Ogre::SceneLoader
@@ -41,33 +42,33 @@
             return mBackgroundColour;
         }
     protected:
-        void processScene(rapidxml::xml_node<>* XMLRoot);
+        void processScene(pugi::xml_node& XMLRoot);
 
-        void processNodes(rapidxml::xml_node<>* XMLNode);
-        void processExternals(rapidxml::xml_node<>* XMLNode);
-        void processEnvironment(rapidxml::xml_node<>* XMLNode);
-        void processTerrain(rapidxml::xml_node<>* XMLNode);
-        void processTerrainPage(rapidxml::xml_node<>* XMLNode);
-        void processBlendmaps(rapidxml::xml_node<>* XMLNode);
-        void processUserData(rapidxml::xml_node<>* XMLNode, Ogre::UserObjectBindings& userData);
-        void processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
-        void processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
+        void processNodes(pugi::xml_node& XMLNode);
+        void processExternals(pugi::xml_node& XMLNode);
+        void processEnvironment(pugi::xml_node& XMLNode);
+        void processTerrain(pugi::xml_node& XMLNode);
+        void processTerrainPage(pugi::xml_node& XMLNode);
+        void processBlendmaps(pugi::xml_node& XMLNode);
+        void processUserData(pugi::xml_node& XMLNode, Ogre::UserObjectBindings& userData);
+        void processLight(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent = 0);
+        void processCamera(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent = 0);
 
-        void processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
-        void processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
-        void processTrackTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
-        void processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
-        void processParticleSystem(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
-        void processBillboardSet(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
-        void processPlane(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
+        void processNode(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent = 0);
+        void processLookTarget(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
+        void processTrackTarget(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
+        void processEntity(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
+        void processParticleSystem(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
+        void processBillboardSet(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
+        void processPlane(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent);
 
-        void processFog(rapidxml::xml_node<>* XMLNode);
-        void processSkyBox(rapidxml::xml_node<>* XMLNode);
-        void processSkyDome(rapidxml::xml_node<>* XMLNode);
-        void processSkyPlane(rapidxml::xml_node<>* XMLNode);
+        void processFog(pugi::xml_node& XMLNode);
+        void processSkyBox(pugi::xml_node& XMLNode);
+        void processSkyDome(pugi::xml_node& XMLNode);
+        void processSkyPlane(pugi::xml_node& XMLNode);
 
-        void processLightRange(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
-        void processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
+        void processLightRange(pugi::xml_node& XMLNode, Ogre::Light *pLight);
+        void processLightAttenuation(pugi::xml_node& XMLNode, Ogre::Light *pLight);
 
         Ogre::SceneManager *mSceneMgr;
         Ogre::SceneNode *mAttachNode;

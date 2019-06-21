@@ -300,8 +300,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<> *XMLNode)
 
     mTerrainGroup = OGRE_NEW TerrainGroup(mSceneMgr, Terrain::ALIGN_X_Z, mapSize, worldSize);
     mTerrainGroup->setOrigin(Vector3::ZERO);
-
-    mTerrainGroup->setResourceGroup("General");
+    mTerrainGroup->setResourceGroup(m_sGroupName);
 
     // Process terrain pages (*)
     if (auto pElement = XMLNode->first_node("terrainPages"))
@@ -737,7 +736,7 @@ void DotSceneLoader::processPlane(rapidxml::xml_node<> *XMLNode, SceneNode *pPar
 
     Plane plane(normal, distance);
     MeshPtr res = MeshManager::getSingletonPtr()->createPlane(
-        name + "mesh", "General", plane, width, height, xSegments, ySegments, hasNormals,
+        name + "mesh", m_sGroupName, plane, width, height, xSegments, ySegments, hasNormals,
         numTexCoordSets, uTile, vTile, up);
     Entity *ent = mSceneMgr->createEntity(name, name + "mesh");
 

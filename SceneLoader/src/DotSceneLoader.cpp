@@ -269,10 +269,6 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<> *XMLNode)
     if (auto pElement = XMLNode->first_node("skyPlane"))
         processSkyPlane(pElement);
 
-    // Process clipping (?)
-    if (auto pElement = XMLNode->first_node("clipping"))
-        processClipping(pElement);
-
     // Process colourAmbient (?)
     if (auto pElement = XMLNode->first_node("colourAmbient"))
         mSceneMgr->setAmbientLight(parseColour(pElement));
@@ -359,19 +355,6 @@ void DotSceneLoader::processLight(rapidxml::xml_node<> *XMLNode, SceneNode *pPar
     pLight->setCastShadows(getAttribBool(XMLNode, "castShadows", true));
     pLight->setPowerScale(getAttribReal(XMLNode, "powerScale", 1.0));
 
-    // Process position (?)
-    if (auto pElement = XMLNode->first_node("position"))
-        pLight->setPosition(parseVector3(pElement));
-
-    // Process normal (?)
-    if (auto pElement = XMLNode->first_node("normal"))
-        pLight->setDirection(parseVector3(pElement));
-
-    if (auto pElement = XMLNode->first_node("directionVector"))
-    {
-        pLight->setDirection(parseVector3(pElement));
-    }
-
     // Process colourDiffuse (?)
     if (auto pElement = XMLNode->first_node("colourDiffuse"))
         pLight->setDiffuseColour(parseColour(pElement));
@@ -435,26 +418,6 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<> *XMLNode, SceneNode *pPa
         Real farDist = getAttribReal(pElement, "far");
         pCamera->setFarClipDistance(farDist);
     }
-
-    // Process position (?)
-    if (auto pElement = XMLNode->first_node("position"))
-        pCamera->setPosition(parseVector3(pElement));
-
-    // Process rotation (?)
-    if (auto pElement = XMLNode->first_node("rotation"))
-        pCamera->setOrientation(parseQuaternion(pElement));
-
-    // Process normal (?)
-    if (auto pElement = XMLNode->first_node("normal"))
-        ; //!< @todo What to do with this element?
-
-    // Process lookTarget (?)
-    if (auto pElement = XMLNode->first_node("lookTarget"))
-        ; //!< @todo Implement the camera look target
-
-    // Process trackTarget (?)
-    if (auto pElement = XMLNode->first_node("trackTarget"))
-        ; //!< @todo Implement the camera track target
 
     // Process userDataReference (?)
     if (auto pElement = XMLNode->first_node("userData"))
@@ -834,15 +797,6 @@ void DotSceneLoader::processSkyPlane(rapidxml::xml_node<> *XMLNode)
     plane.normal = Vector3(planeX, planeY, planeZ);
     plane.d = planeD;
     mSceneMgr->setSkyPlane(true, plane, material, scale, tiling, drawFirst, bow, 1, 1, m_sGroupName);
-}
-
-void DotSceneLoader::processClipping(rapidxml::xml_node<> *XMLNode)
-{
-    //! @todo Implement this
-
-    // Process attributes
-    // Real fNear = getAttribReal(XMLNode, "near", 0);
-    // Real fFar = getAttribReal(XMLNode, "far", 1);
 }
 
 void DotSceneLoader::processLightRange(rapidxml::xml_node<> *XMLNode, Light *pLight)

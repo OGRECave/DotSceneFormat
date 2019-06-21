@@ -28,7 +28,7 @@
     template    CDATA    #REQUIRED
 >
  
-<!ELEMENT light (position?, normal?, colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userData?)>
+<!ELEMENT light (colourDiffuse?, colourSpecular?, lightRange?, lightAttenuation?, userData?)>
 <!ATTLIST light
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -38,7 +38,7 @@
     powerScale		CDATA	"1.0"
 >
  
-<!ELEMENT camera (clipping?, position?, rotation?, normal?, lookTarget?, trackTarget?, userData?)>
+<!ELEMENT camera (clipping?, userData?)>
 <!ATTLIST camera
     name            CDATA    #IMPLIED
     id                ID        #IMPLIED
@@ -83,7 +83,7 @@
     castShadows        (true | false) "true"
 >
  
-<!ELEMENT environment (fog?, skyBox?, skyDome?, skyPlane?, clipping?, colourAmbient?, colourBackground?)>
+<!ELEMENT environment (fog?, skyBox?, skyDome?, skyPlane?, colourAmbient?, colourBackground?)>
  
 <!ELEMENT clipping EMPTY>
 <!ATTLIST clipping

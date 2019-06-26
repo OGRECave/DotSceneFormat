@@ -7,11 +7,19 @@
     author            CDATA    #IMPLIED
 >
  
+<!ELEMENT terrainGroup (terrain*)>
+<!ATTLIST terrainGroup
+    size CDATA #REQUIRED
+    worldSize CDATA #REQUIRED
+>
+
 <!ELEMENT terrain EMPTY>
 <!ATTLIST terrain
-    dataFile CDATA #IMPLIED
+    x CDATA #REQUIRED
+    y CDATA #REQUIRED
+    dataFile CDATA #REQUIRED
 >
- 
+
 <!ELEMENT nodes (node*, position?, rotation?, scale?)>
  
 <!ELEMENT node (position?, rotation?, scale?, lookTarget?, trackTarget?, userData?, node*, entity*, light*, camera*, particleSystem*, billboardSet*, plane*)>

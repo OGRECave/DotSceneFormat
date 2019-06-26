@@ -203,8 +203,8 @@ void DotSceneLoader::processScene(pugi::xml_node& XMLRoot)
         processCamera(pElement);
 
     // Process terrain (?)
-    if (auto pElement = XMLRoot.child("terrain"))
-        processTerrain(pElement);
+    if (auto pElement = XMLRoot.child("terrainGroup"))
+        processTerrainGroup(pElement);
 }
 
 void DotSceneLoader::processNodes(pugi::xml_node& XMLNode)
@@ -273,10 +273,10 @@ void DotSceneLoader::processEnvironment(pugi::xml_node& XMLNode)
         mBackgroundColour = parseColour(pElement);
 }
 
-void DotSceneLoader::processTerrain(pugi::xml_node& XMLNode)
+void DotSceneLoader::processTerrainGroup(pugi::xml_node& XMLNode)
 {
     Real worldSize = getAttribReal(XMLNode, "worldSize");
-    int mapSize = StringConverter::parseInt(XMLNode.attribute("mapSize").value());
+    int mapSize = StringConverter::parseInt(XMLNode.attribute("size").value());
     // TODO: unused
     // bool colourmapEnabled = getAttribBool(XMLNode, "colourmapEnabled");
     // int colourMapTextureSize = StringConverter::parseInt(XMLNode.attribute("colourMapTextureSize").value());
@@ -294,29 +294,22 @@ void DotSceneLoader::processTerrain(pugi::xml_node& XMLNode)
     mTerrainGroup->setResourceGroup(m_sGroupName);
 
     // Process terrain pages (*)
-    if (auto pElement = XMLNode.child("terrainPages"))
+    for (auto pPageElement : XMLNode.children("terrain"))
     {
-        for (auto pPageElement : pElement.children("terrainPage"))
-        {
-            processTerrainPage(pPageElement);
-        }
+        processTerrain(pPageElement);
     }
     mTerrainGroup->loadAllTerrains(true);
 
     mTerrainGroup->freeTemporaryResources();
-    //mTerrain->setPosition(mTerrainPosition);
 }
 
-void DotSceneLoader::processTerrainPage(pugi::xml_node& XMLNode)
+void DotSceneLoader::processTerrain(pugi::xml_node& XMLNode)
 {
-    String name = getAttrib(XMLNode, "name");
-    int pageX = StringConverter::parseInt(XMLNode.attribute("pageX").value());
-    int pageY = StringConverter::parseInt(XMLNode.attribute("pageY").value());
+    String dataFile = getAttrib(XMLNode, "dataFile");
+    int pageX = StringConverter::parseInt(XMLNode.attribute("x").value());
+    int pageY = StringConverter::parseInt(XMLNode.attribute("y").value());
 
-    if (ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), name))
-    {
-        mTerrainGroup->defineTerrain(pageX, pageY, name);
-    }
+    mTerrainGroup->defineTerrain(pageX, pageY, dataFile);
 }
 
 void DotSceneLoader::processLight(pugi::xml_node& XMLNode, SceneNode *pParent)

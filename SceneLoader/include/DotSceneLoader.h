@@ -47,8 +47,8 @@
         void processNodes(pugi::xml_node& XMLNode);
         void processExternals(pugi::xml_node& XMLNode);
         void processEnvironment(pugi::xml_node& XMLNode);
+        void processTerrainGroup(pugi::xml_node& XMLNode);
         void processTerrain(pugi::xml_node& XMLNode);
-        void processTerrainPage(pugi::xml_node& XMLNode);
         void processBlendmaps(pugi::xml_node& XMLNode);
         void processUserData(pugi::xml_node& XMLNode, Ogre::UserObjectBindings& userData);
         void processLight(pugi::xml_node& XMLNode, Ogre::SceneNode *pParent = 0);
@@ -75,7 +75,6 @@
         Ogre::String m_sGroupName;
         Ogre::String m_sPrependNode;
         Ogre::TerrainGroup* mTerrainGroup;
-        Ogre::Vector3 mTerrainPosition;
         Ogre::ColourValue mBackgroundColour;
     };
 
